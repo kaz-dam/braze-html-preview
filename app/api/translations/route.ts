@@ -1,12 +1,12 @@
-import { LokaliseApi } from "@lokalise/node-api";
+import translationService from "@/lib/translation-service";
 
 export async function GET(request: Request) {
-    const lokaliseApi = new LokaliseApi({ apiKey: process.env.LOKALISE_API_TOKEN });
-    const translationFiles = await lokaliseApi.files().list({
-        project_id: "2364858461aa19edc84af2.96176513"
-    });
+    translationService.setProjectId("some_id_from_request");
 
-    console.log(translationFiles);
+    const projects = await translationService.getProjects();
 
+    // console.log(projects);
+
+    // return the translation json for the specific monday id
     return Response.json("done");
 }

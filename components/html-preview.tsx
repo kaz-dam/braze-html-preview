@@ -12,8 +12,6 @@ enum View {
     DESKTOP = "1100"
 };
 
-// type View = "mobile" | "";
-
 const HtmlPreview = ({ template }: HtmlPreviewProps) => {
     const [ view, setView ] = useState<View>(View.DESKTOP);
     const [ brazeTemplate, setBrazeTemplate ] = useState("");
