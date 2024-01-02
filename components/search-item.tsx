@@ -5,8 +5,11 @@ import { useState } from "react";
 const SearchItem = () => {
     const [ mondayId, setMondayId ] = useState("");
 
-    const refreshData = () => {
+    const refreshData = async () => {
         console.log("refreshed");
+        const response = await fetch("/api/translations");
+        const body = await response.json();
+        console.log(body);
     };
 
     const onInputChange = (event: any) => {

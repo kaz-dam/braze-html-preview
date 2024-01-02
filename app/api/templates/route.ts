@@ -3,8 +3,6 @@ import { Octokit } from "octokit";
 import path from "path";
 
 export async function GET(request: Request) {
-    // console.log(request.body);
-
     const octokit = new Octokit({
         auth: process.env.GITHUB_ACCESS_TOKEN
     });
@@ -15,12 +13,10 @@ export async function GET(request: Request) {
         path: "iam-template.html"
     });
 
-    // console.log(template.data);
-
     const content = Buffer.from(template.data.content, template.data.encoding).toString("utf-8");
     const filePath = path.join(process.cwd(), "public", "temp", "template.html");
 
     await writeFile(filePath, content);
 
-    return Response.json("template.html");
+    return Response.json("/temp/template.html");
 }
