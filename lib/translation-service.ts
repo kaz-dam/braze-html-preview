@@ -43,6 +43,7 @@ class TranslationService {
         const bundle = await this.downloadBundle();
         const zip = await JSZip.loadAsync(bundle);
 
+        // TODO: parse file name using monday id
         const fileName = "some_file.json";
         const fileContents = await zip.file(fileName)?.async("string");
 

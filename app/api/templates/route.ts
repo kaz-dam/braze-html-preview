@@ -10,6 +10,7 @@ export async function GET(request: Request) {
     const template = await octokit.request("/repos/{owner}/{repo}/contents/{path}", {
         owner: process.env.GITHUB_REPO_OWNER,
         repo: process.env.GITHUB_REPO_NAME,
+        // TODO: handle templates conditionally according to the monday id
         path: "iam-template.html"
     });
 

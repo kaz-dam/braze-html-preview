@@ -22,6 +22,7 @@ const HtmlPreview = ({ template }: HtmlPreviewProps) => {
     };
 
     const onLoadTemplateClicked = async () => {
+        // TODO: make this process automatic triggered by the monday id input
         const response = await fetch("/api/templates");
         const body = await response.json();
 
