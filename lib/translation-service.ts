@@ -8,16 +8,16 @@ class TranslationService {
     private projectId: string;
 
     constructor(apiKey: string) {
-        this.lokaliseApi = new LokaliseApi({ apiKey: apiKey });
+        this.lokaliseApi = new LokaliseApi({ apiKey });
         this.projectId = "";
     }
 
     async getProjects(): Promise<PaginatedResult> {
-        return this.lokaliseApi.projects().list();
+        return await this.lokaliseApi.projects().list();
     }
 
-    async getSingleProject() {
-        return this.lokaliseApi.projects().get(this.projectId);
+    async getSingleProject(projectId: string) {
+        return await this.lokaliseApi.projects().get(projectId);
     }
 
     async getTranslationFileList(): Promise<PaginatedResult> {
@@ -56,6 +56,13 @@ class TranslationService {
 
     getProjectId(): string {
         return this.projectId;
+    }
+
+    parseProjectIdFromUrl(projectUrl: string): any {
+        let projectId: any = projectUrl.split("/");
+        projectId = projectId.at(projectId.length - 2);
+
+        return projectId;
     }
 }
 
