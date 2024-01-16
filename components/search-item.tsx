@@ -1,19 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import axios from "axios";
 
 const SearchItem = () => {
     const [ mondayId, setMondayId ] = useState("");
 
     const refreshData = async () => {
-        const response = await axios.get("/api/translations", {
-            params: {
-                mondayId
-            }
-        });
+        const response = await fetch(`/api/translations?mondayId=${mondayId}`);
         
-        console.log(response.data);
+        console.log(await response.json());
         // TODO: save translation data into context so the preview can re-run the template with liquid
     };
 

@@ -1,6 +1,5 @@
 import { DownloadBundle } from "@/types/translations";
 import { LokaliseApi, PaginatedResult } from "@lokalise/node-api";
-import axios, { AxiosResponse } from "axios";
 import JSZip from "jszip";
 
 class TranslationService {
@@ -35,8 +34,8 @@ class TranslationService {
 
     async downloadBundle(projectId: string): Promise<any> {
         const bundle: DownloadBundle = await this.getTranslationFiles(projectId);
-        const response: AxiosResponse = await axios.get(bundle.bundle_url, { responseType: "arraybuffer" });
-        return response.data;
+        const response: any = (await fetch(bundle.bundle_url)).arrayBuffer();
+        return response;
     }
 
     async getTranslationFileContent(projectId: string, mondayId: string): Promise<JSON> {

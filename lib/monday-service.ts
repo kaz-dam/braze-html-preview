@@ -1,5 +1,3 @@
-import axios, { AxiosInstance } from "axios";
-
 type LokaliseColumnValue = {
     url: string;
     text: string;
@@ -7,19 +5,15 @@ type LokaliseColumnValue = {
 
 class MondayService {
     private token: string;
-    private httpInstance: AxiosInstance;
+    private httpHeaders: Headers;
     private mondayUrl: string;
 
     constructor() {
         this.mondayUrl = "https://api.monday.com/v2";
         this.token = process.env.MONDAY_API_TOKEN || "";
-
-        this.httpInstance = axios.create({
-            baseURL: this.mondayUrl,
-            headers: {
-                "Authorization": this.token,
-                "Content-Type": "application/json"
-            }
+        this.httpHeaders = new Headers({
+            "Authorization": this.token,
+            "Content-Type": "application/json"
         });
     }
 
@@ -34,14 +28,20 @@ class MondayService {
             }
         }`;
 
-        const data = {
+        const queryData = {
             query,
             variables: { itemId }
         };
 
         try {
-            const response = await this.httpInstance.get("/", { data });
-            return JSON.parse(response.data.data.items[0].column_values[0].value);
+            const response: any = await fetch(this.mondayUrl, {
+                method: "POST",
+                headers: this.httpHeaders,
+                body: JSON.stringify(queryData)
+            });
+
+            const data = await response.json();
+            return JSON.parse(data.data.items[0].column_values[0].value);
         } catch (error) {
             console.log(error);
             return null;

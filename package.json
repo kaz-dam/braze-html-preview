@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "@lokalise/node-api": "^12.1.0",
-    "axios": "^1.6.3",
     "brazejs": "^1.7.1",
     "jszip": "^3.10.1",
     "next": "14.0.4",
