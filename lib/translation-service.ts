@@ -1,7 +1,7 @@
 import { DownloadBundle } from "@/types/translations";
 import { LokaliseApi, PaginatedResult } from "@lokalise/node-api";
 import axios, { AxiosResponse } from "axios";
-import JSZip, { file } from "jszip";
+import JSZip from "jszip";
 
 class TranslationService {
     private lokaliseApi: LokaliseApi;
@@ -20,33 +20,36 @@ class TranslationService {
         return await this.lokaliseApi.projects().get(projectId);
     }
 
-    async getTranslationFileList(): Promise<PaginatedResult> {
+    async getTranslationFileList(projectId: string): Promise<PaginatedResult> {
         return this.lokaliseApi.files().list({
-            project_id: this.projectId,
+            project_id: projectId,
         });
     }
 
-    async getTranslationFiles(): Promise<DownloadBundle> {
-        return this.lokaliseApi.files().download(this.projectId, {
+    async getTranslationFiles(projectId: string): Promise<DownloadBundle> {
+        return this.lokaliseApi.files().download(projectId, {
             format: "json",
             original_filenames: true,
         });
     }
 
-    async downloadBundle(): Promise<any> {
-        const bundle: DownloadBundle = await this.getTranslationFiles();
+    async downloadBundle(projectId: string): Promise<any> {
+        const bundle: DownloadBundle = await this.getTranslationFiles(projectId);
         const response: AxiosResponse = await axios.get(bundle.bundle_url, { responseType: "arraybuffer" });
         return response.data;
     }
 
-    async getTranslationFileContent(): Promise<JSON> {
-        const bundle = await this.downloadBundle();
+    async getTranslationFileContent(projectId: string, mondayId: string): Promise<JSON> {
+        const bundle = await this.downloadBundle(projectId);
         const zip = await JSZip.loadAsync(bundle);
 
-        // TODO: parse file name using monday id
-        const fileName = "some_file.json";
-        const fileContents = await zip.file(fileName)?.async("string");
+        const fileName = this.parseFileNames(zip.files, mondayId);
+        
+        if (!fileName) {
+            return JSON.parse("Filename not found");
+        }
 
+        const fileContents = await zip.file(fileName)?.async("string");
         return JSON.parse(fileContents || "{}");
     }
 
@@ -63,6 +66,11 @@ class TranslationService {
         projectId = projectId.at(projectId.length - 2);
 
         return projectId;
+    }
+
+    parseFileNames(files: any, mondayId: string) {
+        const keys = Object.keys(files);
+        return keys.find((item: string) => item.includes(mondayId));
     }
 }
 
