@@ -3,24 +3,26 @@
 import { useTranslationFile } from "@/context/translation-context";
 import { useEffect, useState } from "react";
 
-type HtmlPreviewProps = {
-    template: string
-};
-
 enum View {
-    MOBILE = "450",
-    TABLET = "750",
-    DESKTOP = "1100"
+    MOBILE = 450,
+    TABLET = 750,
+    DESKTOP = 1100
 };
 
-const HtmlPreview = ({ template }: HtmlPreviewProps) => {
+const HtmlPreview = () => {
     const [ view, setView ] = useState<View>(View.DESKTOP);
-    const [ brazeTemplate, setBrazeTemplate ] = useState("");
+    const [ scale, setScale ] = useState<number>(1);
+    const [ brazeTemplate, setBrazeTemplate ] = useState<string>("");
     const { translationFile, getTranslationFileKeys } = useTranslationFile();
 
-    const onViewChange = (event: any) => {
-        console.log(event.target.value);
-        setView(event.target.value);
+    useEffect(() => {
+        const actualIframeWidth = View.MOBILE;
+        const scaleValue = view / actualIframeWidth;
+        setScale(scaleValue);
+    }, [view, brazeTemplate]);
+
+    const onViewChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        setView(parseInt(event.target.value) as View);
     };
 
     const onLoadTemplateClicked = async () => {
@@ -34,7 +36,7 @@ const HtmlPreview = ({ template }: HtmlPreviewProps) => {
     };
 
     return (
-        <div className="flex flex-col justify-center items-center gap-4">
+        <div className="flex flex-col justify-center items-center gap-4 w-full">
             <select name="" id="" onChange={onViewChange} className="max-w-fit">
                 <option value={View.DESKTOP}>Desktop</option>
                 <option value={View.TABLET}>Tablet</option>
@@ -42,7 +44,18 @@ const HtmlPreview = ({ template }: HtmlPreviewProps) => {
             </select>
             <div>{getTranslationFileKeys()}</div>
             <button onClick={onLoadTemplateClicked}>Load template</button>
-            <iframe src={brazeTemplate} width={view} height={600} className="border-2 border-slate-400 bg-slate-100"></iframe>
+            <div className={`w-[${View.MOBILE}px] h-[600px] overflow-hidden border-2 border-slate-400`}>
+                <iframe 
+                    src={brazeTemplate}
+                    style={{
+                        width: `${scale * 100}%`,
+                        height: `${scale * 100}%`,
+                        transform: `scale(${1 / scale})`,
+                        transformOrigin: "0 0"
+                    }}
+                    className="bg-slate-100"
+                ></iframe>
+            </div>
         </div>
     );
 };

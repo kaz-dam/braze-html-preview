@@ -6,7 +6,7 @@ export default function Home() {
         <main className="flex min-h-screen flex-col items-center gap-4 p-24">
 			<h1>Search for a preview</h1>
 			<SearchItem />
-			<HtmlPreview template={""} />
+			<HtmlPreview />
 		</main>
     );
 }
