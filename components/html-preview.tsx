@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslationFile } from "@/context/translation-context";
 import { useEffect, useState } from "react";
 
 type HtmlPreviewProps = {
@@ -15,6 +16,7 @@ enum View {
 const HtmlPreview = ({ template }: HtmlPreviewProps) => {
     const [ view, setView ] = useState<View>(View.DESKTOP);
     const [ brazeTemplate, setBrazeTemplate ] = useState("");
+    const { translationFile, getTranslationFileKeys } = useTranslationFile();
 
     const onViewChange = (event: any) => {
         console.log(event.target.value);
@@ -38,6 +40,7 @@ const HtmlPreview = ({ template }: HtmlPreviewProps) => {
                 <option value={View.TABLET}>Tablet</option>
                 <option value={View.MOBILE}>Mobile</option>
             </select>
+            <div>{getTranslationFileKeys()}</div>
             <button onClick={onLoadTemplateClicked}>Load template</button>
             <iframe src={brazeTemplate} width={view} height={600} className="border-2 border-slate-400 bg-slate-100"></iframe>
         </div>

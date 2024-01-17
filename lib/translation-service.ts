@@ -26,6 +26,7 @@ class TranslationService {
     }
 
     async getTranslationFiles(projectId: string): Promise<DownloadBundle> {
+        // TODO: check the file formats that are in a project and give feedback if they are not JSON
         return this.lokaliseApi.files().download(projectId, {
             format: "json",
             original_filenames: true,

@@ -1,24 +1,22 @@
 "use client";
 
+import { useTranslationFile } from "@/context/translation-context";
 import { useState } from "react";
 
 const SearchItem = () => {
     const [ mondayId, setMondayId ] = useState("");
+    const { setTranslationFile } = useTranslationFile();
 
     const refreshData = async () => {
         const response = await fetch(`/api/translations?mondayId=${mondayId}`);
-        
-        console.log(await response.json());
-        // TODO: save translation data into context so the preview can re-run the template with liquid
+        const translationFile = await response.json();
+        console.log(translationFile);
+
+        setTranslationFile(translationFile);
     };
 
     const onInputChange = (event: any) => {
         // if (event.target.value.length > 3) {
-            // console.log(event.target.value);
-            // TODO: get monday.com item by its id
-            // TODO: fetch on frontend or create api route
-            // TODO: fetch the Lokalise Project Link column
-            // TODO: parse the url for the lokalise project id
             setMondayId(event.target.value);
         // }
     };
