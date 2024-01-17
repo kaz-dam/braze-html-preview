@@ -1,24 +1,20 @@
 "use client";
 
-import { Dispatch, createContext, useContext, useState } from "react";
+import { TranslationFile, TranslationFileContextType } from "@/types/translations";
+import { createContext, useContext, useState } from "react";
 
-type TranslationFileContextType = {
-    translationFile: Object;
-    setTranslationFile: Dispatch<any>;
-    getTranslationFileKeys: () => string[];
+const defaultContextValue: TranslationFileContextType = {
+    translationFile: {},
+    setTranslationFile: () => {},
+    getTranslationFileKeys: () => []
 };
 
-const TranslationFileContext = createContext<TranslationFileContextType | undefined>(undefined);
+const TranslationFileContext = createContext<TranslationFileContextType>(defaultContextValue);
 
 export const TranslationFileProvider = ({ children }: React.PropsWithChildren) => {
-    const [ translationFile, setTranslationFile ] = useState<any>(undefined);
+    const [ translationFile, setTranslationFile ] = useState<TranslationFile>({});
 
-    const getTranslationFileKeys = (): string[] => {
-        if (translationFile) {
-            return Object.keys(translationFile);
-        }
-        return [];
-    };
+    const getTranslationFileKeys = (): string[] => Object.keys(translationFile);
 
     const availableValues = {
         translationFile,
@@ -33,12 +29,4 @@ export const TranslationFileProvider = ({ children }: React.PropsWithChildren) =
     );
 };
 
-export const useTranslationFile = () => {
-    const translationContext = useContext(TranslationFileContext);
-
-    if (!translationContext) {
-        throw new Error("useTranslationFile must be used within a TranslationFileProvider");
-    }
-
-    return translationContext;
-};
+export const useTranslationFile = () => useContext(TranslationFileContext);
