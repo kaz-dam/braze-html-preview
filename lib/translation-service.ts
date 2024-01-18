@@ -70,6 +70,7 @@ class TranslationService {
 
     parseFileNames(files: any, mondayId: string) {
         const keys = Object.keys(files);
+        // TODO: replace includes to check first appearance
         return keys.find((item: string) => item.includes(mondayId));
     }
 }
