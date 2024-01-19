@@ -15,4 +15,6 @@ export async function GET(request: Request) {
         
         return Response.json(translation);
     }
+
+    return Response.json("No lokalise url found in monday.com");
 }

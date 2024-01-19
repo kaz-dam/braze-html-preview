@@ -10,7 +10,7 @@ enum View {
 };
 
 const HtmlPreview = () => {
-    const [ view, setView ] = useState<View>(View.DESKTOP);
+    const [ view, setView ] = useState<View>(View.MOBILE);
     const [ scale, setScale ] = useState<number>(1);
     const [ brazeTemplate, setBrazeTemplate ] = useState<string>("");
     const { translationFile, getTranslationFileKeys } = useTranslationFile();
@@ -44,7 +44,12 @@ const HtmlPreview = () => {
             </select>
             <div>{getTranslationFileKeys()}</div>
             <button onClick={onLoadTemplateClicked}>Load template</button>
-            <div className={`w-[${View.MOBILE}px] h-[600px] overflow-hidden border-2 border-slate-400`}>
+            <div
+                className={`h-[600px] overflow-hidden border-2 border-slate-400`}
+                style={{
+                    width: View.MOBILE
+                }}
+            >
                 <iframe 
                     src={brazeTemplate}
                     style={{
