@@ -37,7 +37,7 @@ const HtmlPreview = () => {
             </select>
             <div>{getTranslationFileKeys()}</div>
             <div
-                className={`h-[600px] overflow-hidden border-2 border-slate-400 flex justify-center items-center`}
+                className={`h-[600px] overflow-hidden border-2 border-slate-400 grid`}
                 style={{
                     width: View.MOBILE
                 }}
