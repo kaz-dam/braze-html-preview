@@ -1,22 +1,18 @@
 "use client";
 
-// import { useTranslationFile } from "@/context/translation-context";
 import useLokaliseTranslation from "@/hooks/use-lokalise-translation";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useSWRConfig } from "swr";
 
 const SearchItem = () => {
     const [ mondayId, setMondayId ] = useState<number>();
-    // const { setTranslationFile } = useTranslationFile();
     const searchParams = useSearchParams();
-    const { translation, isLoading, error } = useLokaliseTranslation(mondayId);
+    const { key, translation, isLoading, error } = useLokaliseTranslation(mondayId);
+    const { mutate } = useSWRConfig();
 
-    const refreshData = async () => {
-        // const response = await fetch(`/api/translations?mondayId=${mondayId}`);
-        // const translationFile = await response.json();
-        // console.log(translationFile);
-
-        // setTranslationFile(translationFile);
+    const refreshData = () => {
+        mutate(key);
     };
 
     const onInputChange = (event: any) => {
