@@ -1,18 +1,14 @@
+import templateService from "@/lib/template-service";
 import { writeFile } from "fs/promises";
 import { Octokit } from "octokit";
 import path from "path";
 
 export async function GET(request: Request) {
-    const octokit = new Octokit({
-        auth: process.env.GITHUB_ACCESS_TOKEN
-    });
+    // if module name contains 'static' then only pull the specific content block
+    // if module name contains 'dynamic' then pull the content block name from the module name
+    // parse that one content block and pull every content block template that is in it.
 
-    const template = await octokit.request("/repos/{owner}/{repo}/contents/{path}", {
-        owner: process.env.GITHUB_REPO_OWNER,
-        repo: process.env.GITHUB_REPO_NAME,
-        // TODO: handle templates conditionally according to the monday id
-        path: "iam-template.html"
-    });
+    const template = await templateService.getTemplate("iam");
 
     const content = Buffer.from(template.data.content, template.data.encoding).toString("utf-8");
     const filePath = path.join(process.cwd(), "public", "temp", "template.html");
