@@ -1,20 +1,22 @@
 "use client";
 
-import { useTranslationFile } from "@/context/translation-context";
+// import { useTranslationFile } from "@/context/translation-context";
+import useLokaliseTranslation from "@/hooks/use-lokalise-translation";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const SearchItem = () => {
     const [ mondayId, setMondayId ] = useState<number>();
-    const { setTranslationFile } = useTranslationFile();
+    // const { setTranslationFile } = useTranslationFile();
     const searchParams = useSearchParams();
+    const { translation, isLoading, error } = useLokaliseTranslation(mondayId);
 
     const refreshData = async () => {
-        const response = await fetch(`/api/translations?mondayId=${mondayId}`);
-        const translationFile = await response.json();
-        console.log(translationFile);
+        // const response = await fetch(`/api/translations?mondayId=${mondayId}`);
+        // const translationFile = await response.json();
+        // console.log(translationFile);
 
-        setTranslationFile(translationFile);
+        // setTranslationFile(translationFile);
     };
 
     const onInputChange = (event: any) => {
@@ -27,6 +29,10 @@ const SearchItem = () => {
             setMondayId(parseInt(mondayidParam));
         }
     }, []);
+
+    useEffect(() => {
+        console.log(translation);
+    }, [isLoading]);
 
     return (
         <div className="flex flex-col justify-center gap-2">
