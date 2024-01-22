@@ -1,7 +1,4 @@
 import templateService from "@/lib/template-service";
-import { writeFile } from "fs/promises";
-import { Octokit } from "octokit";
-import path from "path";
 
 export async function GET(request: Request) {
     // if module name contains 'static' then only pull the specific content block
@@ -9,11 +6,7 @@ export async function GET(request: Request) {
     // parse that one content block and pull every content block template that is in it.
 
     const template = await templateService.getTemplate("iam");
+    const pathToFile = await templateService.createLocalFile(template);
 
-    const content = Buffer.from(template.data.content, template.data.encoding).toString("utf-8");
-    const filePath = path.join(process.cwd(), "public", "temp", "template.html");
-
-    await writeFile(filePath, content);
-
-    return Response.json("/temp/template.html");
+    return Response.json(pathToFile);
 }
