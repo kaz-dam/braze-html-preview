@@ -29,8 +29,8 @@ const SearchItem = () => {
 
     useEffect(() => {
         console.log(translation);
-        if (translation.projectId) {
-            setProjectId(translation.projectId);
+        if (translation?.projectId) {
+            setProjectId(translation?.projectId);
         }
     }, [isLoading]);
 

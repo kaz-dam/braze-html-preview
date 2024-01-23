@@ -41,7 +41,7 @@ class MondayService {
             });
 
             const data = await response.json();
-            return JSON.parse(data.data.items[0].column_values[0].value);
+            return JSON.parse(data.data?.items[0]?.column_values[0].value);
         } catch (error) {
             console.log(error);
             return null;
