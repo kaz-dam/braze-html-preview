@@ -6,7 +6,7 @@ export type DownloadBundle = {
     branch?: string;
 };
 
-export type TranslationFile = { [key: string]: string };
+export type TranslationFile = { [key: string]: string } | JSON;
 
 export type TranslationFileContextType = {
     translationFile: TranslationFile;
@@ -21,4 +21,9 @@ export type TranslationIds = {
 
 export type TranslationsRouteParams = {
     params: TranslationIds
+};
+
+export type TranslationRouteResponse = {
+    projectId: string;
+    translation: TranslationFile
 };

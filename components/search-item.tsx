@@ -8,7 +8,7 @@ import { useSWRConfig } from "swr";
 const SearchItem = () => {
     const [ mondayId, setMondayId ] = useState<number>();
     const searchParams = useSearchParams();
-    const { key, translation, isLoading, error } = useLokaliseTranslation(mondayId);
+    const { key, translation, isLoading, error } = useLokaliseTranslation(mondayId, undefined);
     const { mutate } = useSWRConfig();
 
     const refreshData = () => {

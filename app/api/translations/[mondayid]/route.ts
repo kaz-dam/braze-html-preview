@@ -1,7 +1,7 @@
 import { NextApiRequest } from "next";
 import mondayService from "@/lib/monday-service";
 import translationService from "@/lib/translation-service";
-import { TranslationsRouteParams } from "@/types/translations";
+import { TranslationRouteResponse, TranslationsRouteParams } from "@/types/translations";
 
 export async function GET(
     request: NextApiRequest,
@@ -17,7 +17,12 @@ export async function GET(
         const projectId = translationService.parseProjectIdFromUrl(lokaliseUrlColumnValue?.url);
         const translation = await translationService.getTranslationFileContent(projectId, mondayId);
         
-        return Response.json(translation);
+        const response: TranslationRouteResponse = {
+            projectId,
+            translation
+        };
+        
+        return Response.json(response);
     }
 
     return Response.json("No lokalise url found in monday.com");
