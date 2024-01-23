@@ -2,15 +2,7 @@ import { OctokitResponse } from "@octokit/types";
 import { Octokit } from "octokit";
 import path from "path";
 import { writeFile } from "fs/promises";
-
-type Channel = "iam" | "eml" | "pn";
-
-type OctokitData = {
-    content: ArrayBuffer;
-    encoding: number;
-    name: string;
-    path: string;
-};
+import { Channel, OctokitData } from "@/types/templates";
 
 class TemplateService {
     private octokit: Octokit;

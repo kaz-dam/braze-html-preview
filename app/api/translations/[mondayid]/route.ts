@@ -1,9 +1,13 @@
+import { NextApiRequest } from "next";
 import mondayService from "@/lib/monday-service";
 import translationService from "@/lib/translation-service";
+import { TranslationsRouteParams } from "@/types/translations";
 
-export async function GET(request: Request) {
-    const requestUrl = new URL(request.url);
-    const mondayId = requestUrl.searchParams.get("mondayId") || null;
+export async function GET(
+    request: NextApiRequest,
+    { params }: TranslationsRouteParams
+) {
+    const mondayId = params.mondayid;
 
     if (!mondayId) return Response.json("Please type in the monday id");
 
@@ -11,7 +15,7 @@ export async function GET(request: Request) {
     
     if (lokaliseUrlColumnValue) {
         const projectId = translationService.parseProjectIdFromUrl(lokaliseUrlColumnValue?.url);
-        const translation = await translationService.getTranslationFileContent(projectId, "5442459925");
+        const translation = await translationService.getTranslationFileContent(projectId, mondayId);
         
         return Response.json(translation);
     }

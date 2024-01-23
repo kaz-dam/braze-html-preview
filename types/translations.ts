@@ -13,3 +13,12 @@ export type TranslationFileContextType = {
     setTranslationFile: Dispatch<TranslationFile>;
     getTranslationFileKeys: () => string[];
 };
+
+export type TranslationIds = {
+    mondayid: number;
+    projectid: string;
+};
+
+export type TranslationsRouteParams = {
+    params: TranslationIds
+};

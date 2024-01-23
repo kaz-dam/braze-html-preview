@@ -39,7 +39,7 @@ class TranslationService {
         return response;
     }
 
-    async getTranslationFileContent(projectId: string, mondayId: string): Promise<JSON> {
+    async getTranslationFileContent(projectId: string, mondayId: number): Promise<JSON> {
         const bundle = await this.downloadBundle(projectId);
         const zip = await JSZip.loadAsync(bundle);
 
@@ -68,10 +68,10 @@ class TranslationService {
         return projectId;
     }
 
-    parseFileNames(files: any, mondayId: string) {
+    parseFileNames(files: any, mondayId: number) {
         const keys = Object.keys(files);
         // TODO: replace includes to check first appearance
-        return keys.find((item: string) => item.includes(mondayId));
+        return keys.find((item: string) => item.includes(mondayId.toString()));
     }
 }
 
