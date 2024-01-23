@@ -27,3 +27,10 @@ export type TranslationRouteResponse = {
     projectId: string;
     translation: TranslationFile
 };
+
+export type LokaliseTranslationHook = {
+    key: string;
+    translation: TranslationRouteResponse;
+    error: any;
+    isLoading: boolean;
+};

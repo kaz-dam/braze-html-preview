@@ -7,8 +7,9 @@ import { useSWRConfig } from "swr";
 
 const SearchItem = () => {
     const [ mondayId, setMondayId ] = useState<number>();
+    const [ projectId, setProjectId ] = useState<string | undefined>();
     const searchParams = useSearchParams();
-    const { key, translation, isLoading, error } = useLokaliseTranslation(mondayId, undefined);
+    const { key, translation, isLoading, error } = useLokaliseTranslation(mondayId, projectId);
     const { mutate } = useSWRConfig();
 
     const refreshData = () => {
@@ -28,6 +29,9 @@ const SearchItem = () => {
 
     useEffect(() => {
         console.log(translation);
+        if (translation.projectId) {
+            setProjectId(translation.projectId);
+        }
     }, [isLoading]);
 
     return (

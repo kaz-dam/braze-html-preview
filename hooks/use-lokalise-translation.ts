@@ -1,7 +1,11 @@
 import { fetcher } from "@/lib/utils";
+import { LokaliseTranslationHook } from "@/types/translations";
 import useSWR from "swr";
 
-const useLokaliseTranslation = (mondayId: number | undefined, projectId: string | undefined) => {
+const useLokaliseTranslation = (
+    mondayId: number | undefined,
+    projectId: string | undefined
+): LokaliseTranslationHook => {
     const key = projectId 
         ? `/api/translations/${mondayId}/${projectId}`
         : `/api/translations/${mondayId}`;
