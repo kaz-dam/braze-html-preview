@@ -3,6 +3,7 @@ import { Octokit } from "octokit";
 import path from "path";
 import { writeFile } from "fs/promises";
 import { Channel, OctokitData } from "@/types/templates";
+import brazeLiquidService from "./braze-liquid-service";
 
 class TemplateService {
     private octokit: Octokit;
@@ -18,7 +19,10 @@ class TemplateService {
         const filePath = path.join(process.cwd(), "public", "temp", template.data.name);
         const urlPath = path.join("temp", template.data.name);
 
-        await writeFile(filePath, content);
+        const tpl = brazeLiquidService.parseString(content);
+        const renderedContent = await brazeLiquidService.renderTemplate(tpl);
+
+        await writeFile(filePath, renderedContent);
 
         return urlPath;
     }
@@ -33,7 +37,7 @@ class TemplateService {
         return this.request(path);
     }
 
-    getLiquidContext() {
+    getLiquidContext(): Promise<OctokitResponse<OctokitData, number>> {
         return this.request("liquid-context.json");
     }
 
