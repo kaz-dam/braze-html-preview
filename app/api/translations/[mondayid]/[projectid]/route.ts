@@ -1,16 +1,10 @@
-import { NextApiRequest } from "next";
-import translationService from "@/lib/translation-service";
+import { NextRequest } from "next/server";
 import { TranslationsRouteParams } from "@/types/translations";
+import TranslationController from "@/controllers/translation-controller";
 
 export async function GET(
-    request: NextApiRequest,
+    request: NextRequest,
     { params }: TranslationsRouteParams
 ) {
-    const mondayId = params.mondayid;
-    const projectId = params.projectid;
-
-    // test mondayid: 5442459925
-    const translation = await translationService.getTranslationFileContent(projectId, mondayId);
-    
-    return Response.json(translation);
+    return TranslationController.getTranslationByProjectId(request, params);
 }
