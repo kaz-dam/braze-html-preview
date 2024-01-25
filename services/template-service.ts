@@ -15,21 +15,39 @@ class TemplateService {
     }
 
     async createLocalFile(template: OctokitResponse<OctokitData, number>): Promise<string>  {
-        const content = Buffer.from(template.data.content, template.data.encoding).toString("utf-8");
+        const content = this.getTemplateContent(template);
         const filePath = path.join(process.cwd(), "public", "temp", template.data.name);
         const urlPath = path.join("temp", template.data.name);
 
-        const tpl = brazeLiquidService.parseString(content);
-        const renderedContent = await brazeLiquidService.renderTemplate(tpl);
+        this.parseTemplateForContentBlocks(template);
 
-        await writeFile(filePath, renderedContent);
+        // const tpl = brazeLiquidService.parseString(content);
+        // const renderedContent = await brazeLiquidService.renderTemplate(tpl);
+
+        await writeFile(filePath, content);
 
         return urlPath;
+    }
+
+    parseTemplateForContentBlocks(template: OctokitResponse<OctokitData, number>): string[] {
+        const content = this.getTemplateContent(template);
+        const regex = /(?<=\{\{content_blocks\.\$\{)(.*?)(?=\}\}\})/g;
+        const matches = content.match(regex);
+        
+        if (matches) {
+            return matches;
+        }
+        
+        return [];
     }
 
     getTemplate(channel: Channel): Promise<OctokitResponse<OctokitData, number>> {
         const path = channel + "-template.html";
         return this.request(path);
+    }
+
+    getTemplateContent(octoresponse: OctokitResponse<OctokitData, number>): string {
+        return Buffer.from(octoresponse.data.content, octoresponse.data.encoding).toString("utf-8");
     }
 
     getContentBlock(contentBlockName: string): Promise<OctokitResponse<OctokitData, number>> {

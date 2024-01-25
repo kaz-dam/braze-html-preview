@@ -6,3 +6,21 @@ export type OctokitData = {
     name: string;
     path: string;
 };
+
+export type LiquidContextSecret = {
+    username: string;
+    password?: string;
+};
+
+export type LiquidContextContentBlocks = {
+    root: string;
+    ext: string;
+};
+
+export type LiquidContext = {
+    firsName: string;
+    lastName: string;
+    custom_attribute: { [ attributeName: string ]: string[] | string };
+    __contentBlocks: LiquidContextContentBlocks;
+    __secrets: { [ key: string ]: LiquidContextSecret }
+};
