@@ -3,7 +3,6 @@ import { Octokit } from "octokit";
 import path from "path";
 import { writeFile } from "fs/promises";
 import { Channel, OctokitData } from "@/types/templates";
-import brazeLiquidService from "./braze-liquid-service";
 
 class TemplateService {
     private octokit: Octokit;
@@ -14,30 +13,23 @@ class TemplateService {
         });
     }
 
-    async createLocalFile(template: OctokitResponse<OctokitData, number>): Promise<string>  {
-        const content = this.getTemplateContent(template);
-        const filePath = path.join(process.cwd(), "public", "temp", template.data.name);
-        const urlPath = path.join("temp", template.data.name);
+    async createLocalFile(templateContent: string, templateName: string): Promise<string>  {
+        const filePath = path.join(process.cwd(), "public", "temp", templateName);
+        const urlPath = path.join("temp", templateName);
 
-        this.parseTemplateForContentBlocks(template);
-
-        // const tpl = brazeLiquidService.parseString(content);
-        // const renderedContent = await brazeLiquidService.renderTemplate(tpl);
-
-        await writeFile(filePath, content);
+        await writeFile(filePath, templateContent);
 
         return urlPath;
     }
 
-    parseTemplateForContentBlocks(template: OctokitResponse<OctokitData, number>): string[] {
-        const content = this.getTemplateContent(template);
+    parseTemplateForContentBlocks(templateContent: string): string[] {
         const regex = /(?<=\{\{content_blocks\.\$\{)(.*?)(?=\}\}\})/g;
-        const matches = content.match(regex);
+        const matches = templateContent.match(regex);
         
         if (matches) {
             return matches;
         }
-        
+
         return [];
     }
 
