@@ -1,12 +1,12 @@
-import { OctokitData } from "@/types/templates";
 import Liquid from "brazejs";
-import templateService from "./template-service";
-import { OctokitResponse } from "@octokit/types";
+import path from "path";
 import ITemplate from "brazejs/dist/template/itemplate";
+import templateService from "./template-service";
+import LiquidContextModel from "@/models/liquid-context-model";
 
 class BrazeLiquidService {
     private liquidEngine: Liquid;
-    private liquidContext: OctokitResponse<OctokitData, number> | undefined;
+    private liquidContext: LiquidContextModel | undefined;
 
     constructor() {
         this.liquidEngine = new Liquid({
@@ -16,7 +16,9 @@ class BrazeLiquidService {
     }
 
     async setContext(): Promise<void> {
-        this.liquidContext = await templateService.getLiquidContext();
+        const context = await templateService.getLiquidContext();
+        this.liquidContext = new LiquidContextModel(JSON.parse(templateService.getTemplateContent(context)));
+        this.liquidContext.setContentBlockRoot(path.join(process.cwd(), "public", "temp", "content_blocks"));
     }
 
     parseString(string: string) {
@@ -24,7 +26,11 @@ class BrazeLiquidService {
     }
 
     renderTemplate(template: ITemplate[]): Promise<string> {
-        return this.liquidEngine.render(template, this.liquidContext?.data);
+        if (!this.liquidContext) {
+            throw new Error("Liquid context is undefined");
+        }
+        console.log(this.liquidContext);
+        return this.liquidEngine.render(template, this.liquidContext.getContextObejct());
     }
 }
 

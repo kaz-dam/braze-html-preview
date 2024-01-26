@@ -16,6 +16,7 @@ const HtmlPreview = () => {
     const [ scale, setScale ] = useState<number>(1);
     const [ brazeTemplate, setBrazeTemplate ] = useState<string>("");
     const { translationFile, getTranslationFileKeys } = useTranslationFile();
+    // only start fetching templates when there is a translation file
     const { template, isLoading, error } = useTemplates();
 
     useEffect(() => {

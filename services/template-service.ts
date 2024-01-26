@@ -3,6 +3,7 @@ import { Octokit } from "octokit";
 import path from "path";
 import { writeFile } from "fs/promises";
 import { Channel, OctokitData } from "@/types/templates";
+import { mkdirSync } from "fs";
 
 class TemplateService {
     private octokit: Octokit;
@@ -13,8 +14,20 @@ class TemplateService {
         });
     }
 
-    async createLocalFile(templateContent: string, templateName: string): Promise<string>  {
-        const filePath = path.join(process.cwd(), "public", "temp", templateName);
+    async createLocalFile(
+        templateContent: string,
+        templateName: string,
+        isContentBlock: boolean = false
+    ): Promise<string>  {
+        let filePath: string;
+
+        if (isContentBlock) {
+            const dirPath = path.join(process.cwd(), "public", "temp", "content_blocks");
+            await mkdirSync(dirPath, { recursive: true });
+            filePath = path.join(dirPath, templateName);
+        } else {
+            filePath = path.join(process.cwd(), "public", "temp", templateName);
+        }
         const urlPath = path.join("temp", templateName);
 
         await writeFile(filePath, templateContent);
@@ -45,6 +58,19 @@ class TemplateService {
     getContentBlock(contentBlockName: string): Promise<OctokitResponse<OctokitData, number>> {
         const path = "content_blocks/" + contentBlockName + ".liquid";
         return this.request(path);
+    }
+
+    getAllContentBlocks(contentBlockList: string[]): void {
+        contentBlockList.forEach(async contentBlock => {
+            const contentBlockTemplate = await this.getContentBlock(contentBlock);
+            const contentBlockTemplateContent = this.getTemplateContent(contentBlockTemplate);
+            const contentBlockContentBlocks = this.parseTemplateForContentBlocks(contentBlockTemplateContent);
+            await this.createLocalFile(contentBlockTemplateContent, contentBlockTemplate.data.name, true);
+
+            if (contentBlockContentBlocks.length > 0) {
+                this.getAllContentBlocks(contentBlockContentBlocks);
+            }
+        });
     }
 
     getLiquidContext(): Promise<OctokitResponse<OctokitData, number>> {

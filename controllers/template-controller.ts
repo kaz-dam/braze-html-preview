@@ -11,13 +11,7 @@ class TemplateController {
         const template = await templateService.getTemplate("iam");
         const templateContent = templateService.getTemplateContent(template);
         const contentBlocks = templateService.parseTemplateForContentBlocks(templateContent);
-
-        contentBlocks.forEach(async contentBlock => {
-            const contentBlockTemplate = await templateService.getContentBlock(contentBlock);
-            const contentBlockTemplateContent = templateService.getTemplateContent(contentBlockTemplate);
-            const contentBlockContentBlocks = templateService.parseTemplateForContentBlocks(contentBlockTemplateContent);
-            await templateService.createLocalFile(contentBlockTemplateContent, contentBlockTemplate.data.path);
-        });
+        templateService.getAllContentBlocks(contentBlocks);
 
         const tpl = brazeLiquidService.parseString(templateContent);
         const renderedContent = await brazeLiquidService.renderTemplate(tpl);
