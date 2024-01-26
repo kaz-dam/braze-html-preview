@@ -8,15 +8,14 @@ export type DownloadBundle = {
 
 export type TranslationFile = { [key: string]: string } | JSON;
 
-export type TranslationFileContextType = {
-    translationFile: TranslationFile;
-    setTranslationFile: Dispatch<TranslationFile>;
-    getTranslationFileKeys: () => string[];
+export type TranslationContextType = TranslationIds & {
+    setMondayId: Dispatch<number | undefined>;
+    setProjectId: Dispatch<string | undefined>;
 };
 
 export type TranslationIds = {
-    mondayid: number;
-    projectid: string;
+    mondayId: number | undefined;
+    projectId: string | undefined;
 };
 
 export type TranslationsRouteParams = {

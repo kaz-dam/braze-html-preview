@@ -1,9 +1,10 @@
 "use client";
 
-import { useTranslationFile } from "@/context/translation-context";
+import { useTranslation } from "@/context/translation-context";
 import useTemplates from "@/hooks/use-templates";
 import { useEffect, useState } from "react";
 import Loader from "./ui/loader";
+import { useSWRConfig } from "swr";
 
 enum View {
     MOBILE = 450,
@@ -14,16 +15,19 @@ enum View {
 const HtmlPreview = () => {
     const [ view, setView ] = useState<View>(View.MOBILE);
     const [ scale, setScale ] = useState<number>(1);
-    const [ brazeTemplate, setBrazeTemplate ] = useState<string>("");
-    const { translationFile, getTranslationFileKeys } = useTranslationFile();
-    // only start fetching templates when there is a translation file
+    const { mondayId, projectId } = useTranslation();
     const { template, isLoading, error } = useTemplates();
+    const { mutate } = useSWRConfig();
 
     useEffect(() => {
         const actualIframeWidth = View.MOBILE;
         const scaleValue = view / actualIframeWidth;
         setScale(scaleValue);
-    }, [view, brazeTemplate]);
+    }, [view, template]);
+
+    useEffect(() => {
+        mutate("/api/templates", undefined, true);
+    }, [mondayId, projectId]);
 
     const onViewChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         setView(parseInt(event.target.value) as View);
@@ -36,7 +40,7 @@ const HtmlPreview = () => {
                 <option value={View.TABLET}>Tablet</option>
                 <option value={View.MOBILE}>Mobile</option>
             </select>
-            <div>{getTranslationFileKeys()}</div>
+            {/* <div>{getTranslationFileKeys()}</div> */}
             <div
                 className={`h-[600px] overflow-hidden border-2 border-slate-400 grid`}
                 style={{

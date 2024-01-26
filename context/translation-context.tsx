@@ -1,32 +1,33 @@
 "use client";
 
-import { TranslationFile, TranslationFileContextType } from "@/types/translations";
+import { TranslationContextType } from "@/types/translations";
 import { createContext, useContext, useState } from "react";
 
-const defaultContextValue: TranslationFileContextType = {
-    translationFile: {},
-    setTranslationFile: () => {},
-    getTranslationFileKeys: () => []
+const defaultContextValue: TranslationContextType = {
+    mondayId: 0,
+    projectId: "",
+    setMondayId: () => {},
+    setProjectId: () => {}
 };
 
-const TranslationFileContext = createContext<TranslationFileContextType>(defaultContextValue);
+const TranslationContext = createContext<TranslationContextType>(defaultContextValue);
 
 export const TranslationFileProvider = ({ children }: React.PropsWithChildren) => {
-    const [ translationFile, setTranslationFile ] = useState<TranslationFile>({});
-
-    const getTranslationFileKeys = (): string[] => Object.keys(translationFile);
+    const [ mondayId, setMondayId ] = useState<number>();
+    const [ projectId, setProjectId ] = useState<string>();
 
     const availableValues = {
-        translationFile,
-        setTranslationFile,
-        getTranslationFileKeys
+        mondayId,
+        projectId,
+        setMondayId,
+        setProjectId
     };
 
     return (
-        <TranslationFileContext.Provider value={availableValues}>
+        <TranslationContext.Provider value={availableValues}>
             {children}
-        </TranslationFileContext.Provider>
+        </TranslationContext.Provider>
     );
 };
 
-export const useTranslationFile = () => useContext(TranslationFileContext);
+export const useTranslation = () => useContext(TranslationContext);

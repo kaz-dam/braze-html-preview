@@ -29,7 +29,7 @@ class BrazeLiquidService {
         if (!this.liquidContext) {
             throw new Error("Liquid context is undefined");
         }
-        console.log(this.liquidContext);
+        
         return this.liquidEngine.render(template, this.liquidContext.getContextObejct());
     }
 }

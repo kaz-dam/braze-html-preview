@@ -1,14 +1,14 @@
 "use client";
 
-import useLokaliseTranslation from "@/hooks/use-lokalise-translation";
+import { useTranslation } from "@/context/translation-context";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useSWRConfig } from "swr";
+import useLokaliseTranslation from "@/hooks/use-lokalise-translation";
 
 const SearchItem = () => {
-    const [ mondayId, setMondayId ] = useState<number>();
-    const [ projectId, setProjectId ] = useState<string | undefined>();
     const searchParams = useSearchParams();
+    const { mondayId, projectId, setMondayId, setProjectId } = useTranslation();
     const { key, translation, isLoading, error } = useLokaliseTranslation(mondayId, projectId);
     const { mutate } = useSWRConfig();
 
