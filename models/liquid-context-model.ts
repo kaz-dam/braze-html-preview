@@ -9,6 +9,18 @@ class LiquidContextModel {
         this.setApiAuthPassword("max-cc-prod_v2", this.getApiAuthPassword("max-cc-prod_v2"));
     }
 
+    setApiAuthPassword(secretName: string, password: string): void {
+        this.context.__secrets[secretName].password = password;
+    }
+
+    setContentBlockRoot(root: string): void {
+        this.context.__contentBlocks.root = root;
+    }
+
+    setCampaignName(campaignName: string): void {
+        this.context.campaign.name = campaignName;
+    }
+
     getApiAuthName(name: string): LiquidContextSecret {
         return this.context.__secrets[name];
     }
@@ -17,14 +29,6 @@ class LiquidContextModel {
         const envName = secretName.toUpperCase().replaceAll("-", "_");
 
         return process.env[envName] || "";
-    }
-
-    setApiAuthPassword(secretName: string, password: string): void {
-        this.context.__secrets[secretName].password = password;
-    }
-
-    setContentBlockRoot(root: string): void {
-        this.context.__contentBlocks.root = root;
     }
 
     getContextObejct(): LiquidContext {
