@@ -35,8 +35,13 @@ class TranslationController {
         if (!projectId) return NextResponse.json("Project id is missing");
 
         const translation = await translationService.getTranslationFileContent(projectId, mondayId);
+
+        const response: TranslationRouteResponse = {
+            projectId,
+            translation
+        };
         
-        return NextResponse.json(translation);
+        return NextResponse.json(response);
     }
 }
 

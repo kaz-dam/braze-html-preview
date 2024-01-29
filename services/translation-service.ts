@@ -44,6 +44,8 @@ class TranslationService {
         const zip = await JSZip.loadAsync(bundle);
 
         const fileName = this.parseFileNames(zip.files, mondayId);
+
+        // console.log(fileName);
         
         if (!fileName) {
             return JSON.parse("Filename not found");
@@ -70,8 +72,10 @@ class TranslationService {
 
     parseFileNames(files: any, mondayId: number) {
         const keys = Object.keys(files);
-        // TODO: replace includes to check first appearance
-        return keys.find((item: string) => item.includes(mondayId.toString()));
+        return keys.find((item: string) => {
+            // return item.startsWith(mondayId.toString())
+            return item.includes(mondayId.toString())
+        });
     }
 }
 

@@ -40,6 +40,7 @@ const SearchItem = () => {
                 <input type="text" placeholder="Enter Monday.com ID" onChange={onInputChange} />
             )}
             <button className="px-4 py-2 rounded-sm bg-purple-700 text-white" onClick={refreshData}>Refresh</button>
+            {translation && <div>{translation?.projectId}</div>}
         </div>
     );
 };

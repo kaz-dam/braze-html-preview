@@ -40,7 +40,6 @@ const HtmlPreview = () => {
                 <option value={View.TABLET}>Tablet</option>
                 <option value={View.MOBILE}>Mobile</option>
             </select>
-            {/* <div>{getTranslationFileKeys()}</div> */}
             <div
                 className={`h-[600px] overflow-hidden border-2 border-slate-400 grid`}
                 style={{
