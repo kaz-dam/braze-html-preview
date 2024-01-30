@@ -3,6 +3,26 @@ type LokaliseColumnValue = {
     text: string;
 };
 
+type MondayColumn = {
+    id: string;
+    title: string;
+    value: string;
+    text: string;
+};
+
+type MondayResponseItem = {
+    parent_item: {
+        id: string;
+    };
+    column_values: MondayColumn[];
+};
+
+type MondayResponse = {
+    data: {
+        items: MondayResponseItem[];
+    };
+};
+
 class MondayService {
     private token: string;
     private httpHeaders: Headers;
@@ -20,8 +40,12 @@ class MondayService {
     async getMondayItemLokaliseColumn(itemId: number): Promise<LokaliseColumnValue | null> {
         const query = `query($itemId: [Int]) {
             items (ids: $itemId) {
-                column_values(ids: "link5") {
+                parent_item {
                     id
+                }
+                column_values {
+                    id
+                    title
                     value
                     text
                 }
@@ -34,18 +58,33 @@ class MondayService {
         };
 
         try {
-            const response: any = await fetch(this.mondayUrl, {
+            const response: Response = await fetch(this.mondayUrl, {
                 method: "POST",
                 headers: this.httpHeaders,
                 body: JSON.stringify(queryData)
             });
 
-            const data = await response.json();
-            return JSON.parse(data.data?.items[0]?.column_values[0].value);
+            const data: MondayResponse = await response.json();
+
+            const lokaliseColumn = this.parseColumnsForLokaliseRelated(data.data?.items[0]);
+
+            return lokaliseColumn?.value ? JSON.parse(lokaliseColumn.value) : null;
         } catch (error) {
             console.log(error);
             return null;
         }
+    }
+
+    parseColumnsForLokaliseRelated(item: MondayResponseItem): MondayColumn | null {
+        for (const column of item.column_values) {
+            const columnTitle = column.title.toLowerCase();
+
+            if (columnTitle.includes("lokalise")) {
+                return column;
+            }
+        }
+
+        return null;
     }
 }
 

@@ -26,7 +26,6 @@ class TranslationService {
     }
 
     async getTranslationFiles(projectId: string): Promise<DownloadBundle> {
-        // TODO: check the file formats that are in a project and give feedback if they are not JSON
         return this.lokaliseApi.files().download(projectId, {
             format: "json",
             original_filenames: true,
@@ -44,8 +43,6 @@ class TranslationService {
         const zip = await JSZip.loadAsync(bundle);
 
         const fileName = this.parseFileNames(zip.files, mondayId);
-
-        // console.log(fileName);
         
         if (!fileName) {
             return JSON.parse("Filename not found");
@@ -72,9 +69,12 @@ class TranslationService {
 
     parseFileNames(files: any, mondayId: number) {
         const keys = Object.keys(files);
+
+        // TODO: get the parent item id from monday.com
+
         return keys.find((item: string) => {
             // return item.startsWith(mondayId.toString())
-            return item.includes(mondayId.toString())
+            return item.includes(mondayId.toString());
         });
     }
 }
