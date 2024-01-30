@@ -10,11 +10,15 @@ export type TranslationFile = { [key: string]: string } | JSON;
 
 export type TranslationContextType = TranslationIds & {
     setMondayId: Dispatch<number | undefined>;
+    setMondayParentId: Dispatch<number | undefined>;
+    setLanguage: Dispatch<string | undefined>;
     setProjectId: Dispatch<string | undefined>;
 };
 
 export type TranslationIds = {
     mondayId: number | undefined;
+    mondayParentId: number | undefined;
+    language: string | undefined;
     projectId: string | undefined;
 };
 
@@ -24,6 +28,8 @@ export type TranslationsRouteParams = {
 
 export type TranslationRouteResponse = {
     projectId: string;
+    mondayParentId?: number;
+    language?: string;
     translation: TranslationFile
 };
 

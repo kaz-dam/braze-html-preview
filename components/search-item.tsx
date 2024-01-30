@@ -8,7 +8,14 @@ import useLokaliseTranslation from "@/hooks/use-lokalise-translation";
 
 const SearchItem = () => {
     const searchParams = useSearchParams();
-    const { mondayId, projectId, setMondayId, setProjectId } = useTranslation();
+    const {
+        mondayId,
+        projectId,
+        setMondayId,
+        setMondayParentId,
+        setLanguage,
+        setProjectId
+    } = useTranslation();
     const { key, translation, isLoading, error } = useLokaliseTranslation(mondayId, projectId);
     const { mutate } = useSWRConfig();
 
@@ -31,6 +38,8 @@ const SearchItem = () => {
         console.log(translation);
         if (translation?.projectId) {
             setProjectId(translation?.projectId);
+            setMondayParentId(translation.mondayParentId);
+            setLanguage(translation.language);
         }
     }, [isLoading]);
 

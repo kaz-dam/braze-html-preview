@@ -21,6 +21,7 @@ export type LiquidContext = {
     firsName: string;
     lastName: string;
     campaign: { name: string; };
+    json_data: { [ key: string ]: string };
     custom_attribute: { [ attributeName: string ]: string[] | string };
     __contentBlocks: LiquidContextContentBlocks;
     __secrets: { [ key: string ]: LiquidContextSecret }

@@ -7,6 +7,7 @@ export type MondayQueryData = {
 
 export type LokaliseRelatedValues = {
     lokaliseUrl: string;
+    parentItemId: number;
     language: string;
 };
 

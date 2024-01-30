@@ -13,6 +13,9 @@ class TemplateController {
         const contentBlocks = templateService.parseTemplateForContentBlocks(templateContent);
         templateService.getAllContentBlocks(contentBlocks);
 
+        // TODO: add the translation object to the context
+        // make the api request and templates endpoint POST
+        // to receive the translation object from the frontend
         const tpl = brazeLiquidService.parseString(templateContent);
         const renderedContent = await brazeLiquidService.renderTemplate(tpl);
         

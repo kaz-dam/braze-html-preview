@@ -50,7 +50,12 @@ class MondayService {
             const columnTitle = column.title.toLowerCase();
 
             if (columnTitle.includes(columnName.toLowerCase())) {
-                return column;
+                return {
+                    ...column,
+                    value: typeof(column.value) === "string" ?
+                        JSON.parse(column.value) :
+                        column.value
+                };
             }
         }
 
@@ -64,12 +69,14 @@ class MondayService {
         if (lokaliseColumn && languageColumn) {
             return {
                 lokaliseUrl: lokaliseColumn?.value.url,
+                parentItemId: Number(data.data?.items[0].parent_item?.id),
                 language: languageColumn?.text
             };
         }
 
         return {
             lokaliseUrl: "",
+            parentItemId: 0,
             language: ""
         };
     }

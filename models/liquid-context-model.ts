@@ -21,6 +21,10 @@ class LiquidContextModel {
         this.context.campaign.name = campaignName;
     }
 
+    setTranslationObject(translation: any): void {
+        this.context.json_data = translation;
+    }
+
     getApiAuthName(name: string): LiquidContextSecret {
         return this.context.__secrets[name];
     }

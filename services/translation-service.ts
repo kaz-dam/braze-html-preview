@@ -1,3 +1,4 @@
+import { LokaliseRelatedValues } from "@/types/monday";
 import { DownloadBundle } from "@/types/translations";
 import { LokaliseApi, PaginatedResult } from "@lokalise/node-api";
 import JSZip from "jszip";
@@ -38,11 +39,15 @@ class TranslationService {
         return response;
     }
 
-    async getTranslationFileContent(projectId: string, mondayId: number): Promise<JSON> {
+    async getTranslationFileContent(
+        projectId: string,
+        mondayId: number,
+        lokaliseInfo: LokaliseRelatedValues
+    ): Promise<JSON> {
         const bundle = await this.downloadBundle(projectId);
         const zip = await JSZip.loadAsync(bundle);
 
-        const fileName = this.parseFileNames(zip.files, mondayId);
+        const fileName = this.parseFileNames(zip.files, mondayId, lokaliseInfo.parentItemId, lokaliseInfo.language);
         
         if (!fileName) {
             return JSON.parse("Filename not found");
@@ -67,14 +72,21 @@ class TranslationService {
         return projectId;
     }
 
-    parseFileNames(files: any, mondayId: number) {
+    parseFileNames(
+        files: any,
+        mondayId: number,
+        parentItemId: number,
+        language: string
+    ): string | undefined {
         const keys = Object.keys(files);
-
-        // TODO: get the parent item id from monday.com
 
         return keys.find((item: string) => {
             // return item.startsWith(mondayId.toString())
-            return item.includes(mondayId.toString());
+            return (
+                (item.includes(mondayId.toString()) ||
+                    item.includes(parentItemId.toString())) &&
+                item.includes(language)
+            );
         });
     }
 }
