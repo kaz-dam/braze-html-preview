@@ -12,7 +12,7 @@ class TranslationController {
         const lokaliseUrlColumnValue = await mondayService.getMondayItemLokaliseColumn(Number(mondayId));
         
         if (lokaliseUrlColumnValue) {
-            const projectId = translationService.parseProjectIdFromUrl(lokaliseUrlColumnValue?.url);
+            const projectId = translationService.parseProjectIdFromUrl(lokaliseUrlColumnValue?.lokaliseUrl);
             const translation = await translationService.getTranslationFileContent(projectId, mondayId);
             
             const response: TranslationRouteResponse = {

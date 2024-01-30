@@ -1,27 +1,5 @@
-type LokaliseColumnValue = {
-    url: string;
-    text: string;
-};
+import { LokaliseRelatedValues, MondayColumn, MondayQueryData, MondayResponse, MondayResponseItem } from "@/types/monday";
 
-type MondayColumn = {
-    id: string;
-    title: string;
-    value: string;
-    text: string;
-};
-
-type MondayResponseItem = {
-    parent_item: {
-        id: string;
-    };
-    column_values: MondayColumn[];
-};
-
-type MondayResponse = {
-    data: {
-        items: MondayResponseItem[];
-    };
-};
 
 class MondayService {
     private token: string;
@@ -37,7 +15,7 @@ class MondayService {
         });
     }
 
-    async getMondayItemLokaliseColumn(itemId: number): Promise<LokaliseColumnValue | null> {
+    async getMondayItemLokaliseColumn(itemId: number): Promise<LokaliseRelatedValues | null> {
         const query = `query($itemId: [Int]) {
             items (ids: $itemId) {
                 parent_item {
@@ -52,39 +30,58 @@ class MondayService {
             }
         }`;
 
-        const queryData = {
+        const queryData: MondayQueryData = {
             query,
             variables: { itemId }
         };
 
         try {
-            const response: Response = await fetch(this.mondayUrl, {
-                method: "POST",
-                headers: this.httpHeaders,
-                body: JSON.stringify(queryData)
-            });
+            const data: MondayResponse = await this.requestToMondayApi(queryData);
 
-            const data: MondayResponse = await response.json();
-
-            const lokaliseColumn = this.parseColumnsForLokaliseRelated(data.data?.items[0]);
-
-            return lokaliseColumn?.value ? JSON.parse(lokaliseColumn.value) : null;
+            return this.prepareTranslationDataFromMonday(data);
         } catch (error) {
             console.log(error);
             return null;
         }
     }
 
-    parseColumnsForLokaliseRelated(item: MondayResponseItem): MondayColumn | null {
+    parseColumnsForName(item: MondayResponseItem, columnName: string): MondayColumn | null {
         for (const column of item.column_values) {
             const columnTitle = column.title.toLowerCase();
 
-            if (columnTitle.includes("lokalise")) {
+            if (columnTitle.includes(columnName.toLowerCase())) {
                 return column;
             }
         }
 
         return null;
+    }
+
+    prepareTranslationDataFromMonday(data: MondayResponse): LokaliseRelatedValues {
+        const lokaliseColumn = this.parseColumnsForName(data.data?.items[0], "lokalise");
+        const languageColumn = this.parseColumnsForName(data.data?.items[0], "language");
+
+        if (lokaliseColumn && languageColumn) {
+            return {
+                lokaliseUrl: lokaliseColumn?.value.url,
+                language: languageColumn?.text
+            };
+        }
+
+        return {
+            lokaliseUrl: "",
+            language: ""
+        };
+    }
+
+    async requestToMondayApi(queryData: MondayQueryData): Promise<MondayResponse> {
+        const response: Response = await fetch(this.mondayUrl, {
+            method: "POST",
+            headers: this.httpHeaders,
+            body: JSON.stringify(queryData)
+        });
+
+        return response.json();
     }
 }
 
