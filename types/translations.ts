@@ -30,7 +30,7 @@ export type TranslationRouteResponse = {
     projectId: string;
     mondayParentId?: number;
     language?: string;
-    translation: TranslationFile
+    pathToFile?: string;
 };
 
 export type LokaliseTranslationHook = {
@@ -39,3 +39,5 @@ export type LokaliseTranslationHook = {
     error: any;
     isLoading: boolean;
 };
+
+export type LanguageCode = "ENG" | "SPA" | "DAN" | "SWE" | "NOR" | "FIN" | "POL" | "POR" | "RON" | "HUN" | "CES" | "SLV" | "SLK" | "SRP" | "MKD" | "BUL" | "HRV" | "NLD" | "FRA" | "LAV" | "BOS" | "CNR" | "MDA"

@@ -4,11 +4,13 @@ import useSWR from "swr";
 
 const useLokaliseTranslation = (
     mondayId: number | undefined,
-    projectId: string | undefined
+    projectId: string | undefined,
+    language: string | undefined
 ): LokaliseTranslationHook => {
-    const key = projectId 
-        ? `/api/translations/${mondayId}/${projectId}`
+    const key = (projectId && language) 
+        ? `/api/translations/${mondayId}/${projectId}?language=${language}`
         : `/api/translations/${mondayId}`;
+    // const key = `/api/translations/${mondayId}`;
 
     const { data, error, isLoading } = useSWR(key, fetcher, {
         revalidateIfStale: false,

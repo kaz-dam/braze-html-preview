@@ -25,6 +25,14 @@ class BrazeLiquidService {
         return this.liquidEngine.parse(string);
     }
 
+    addTranslationToContext(translation: any): void {
+        if (!this.liquidContext) {
+            throw new Error("Liquid context is undefined");
+        }
+
+        this.liquidContext.setTranslationObject(translation);
+    }
+
     renderTemplate(template: ITemplate[]): Promise<string> {
         if (!this.liquidContext) {
             throw new Error("Liquid context is undefined");

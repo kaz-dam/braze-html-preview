@@ -4,6 +4,7 @@ import path from "path";
 import { writeFile } from "fs/promises";
 import { Channel, OctokitData } from "@/types/templates";
 import { mkdirSync } from "fs";
+import { randomUUID } from "crypto";
 
 class TemplateService {
     private octokit: Octokit;
@@ -28,7 +29,7 @@ class TemplateService {
         } else {
             filePath = path.join(process.cwd(), "public", "temp", templateName);
         }
-        const urlPath = path.join("temp", templateName);
+        const urlPath = path.join("temp", templateName) + "?v=" + randomUUID();
 
         await writeFile(filePath, templateContent);
 

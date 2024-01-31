@@ -42,15 +42,15 @@ class TranslationService {
     async getTranslationFileContent(
         projectId: string,
         mondayId: number,
-        lokaliseInfo: LokaliseRelatedValues
+        language: string
     ): Promise<JSON> {
         const bundle = await this.downloadBundle(projectId);
         const zip = await JSZip.loadAsync(bundle);
 
-        const fileName = this.parseFileNames(zip.files, mondayId, lokaliseInfo.parentItemId, lokaliseInfo.language);
+        const fileName = this.parseFileNames(zip.files, mondayId, language);
         
         if (!fileName) {
-            return JSON.parse("Filename not found");
+            return JSON.parse("{}");
         }
 
         const fileContents = await zip.file(fileName)?.async("string");
@@ -75,7 +75,6 @@ class TranslationService {
     parseFileNames(
         files: any,
         mondayId: number,
-        parentItemId: number,
         language: string
     ): string | undefined {
         const keys = Object.keys(files);
@@ -83,8 +82,7 @@ class TranslationService {
         return keys.find((item: string) => {
             // return item.startsWith(mondayId.toString())
             return (
-                (item.includes(mondayId.toString()) ||
-                    item.includes(parentItemId.toString())) &&
+                item.includes(mondayId.toString()) &&
                 item.includes(language)
             );
         });

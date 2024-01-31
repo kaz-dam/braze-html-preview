@@ -1,10 +1,7 @@
 "use client";
 
-import { useTranslation } from "@/context/translation-context";
-import useTemplates from "@/hooks/use-templates";
 import { useEffect, useState } from "react";
 import Loader from "./ui/loader";
-import { useSWRConfig } from "swr";
 
 enum View {
     MOBILE = 450,
@@ -12,22 +9,20 @@ enum View {
     DESKTOP = 1100
 };
 
-const HtmlPreview = () => {
+type HtmlPreviewProps = {
+    templatePath: string;
+    mondayItemIsLoading?: boolean;
+};
+
+const HtmlPreview = ({ templatePath, mondayItemIsLoading }: HtmlPreviewProps) => {
     const [ view, setView ] = useState<View>(View.MOBILE);
     const [ scale, setScale ] = useState<number>(1);
-    const { mondayId, projectId } = useTranslation();
-    const { template, isLoading, error } = useTemplates();
-    const { mutate } = useSWRConfig();
 
     useEffect(() => {
         const actualIframeWidth = View.MOBILE;
         const scaleValue = view / actualIframeWidth;
         setScale(scaleValue);
-    }, [view, template]);
-
-    useEffect(() => {
-        mutate("/api/templates", undefined, true);
-    }, [mondayId, projectId]);
+    }, [view, templatePath]);
 
     const onViewChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         setView(parseInt(event.target.value) as View);
@@ -36,20 +31,20 @@ const HtmlPreview = () => {
     return (
         <div className="flex flex-col justify-center items-center gap-4 w-full">
             <select name="" id="" onChange={onViewChange} className="max-w-fit">
-                <option value={View.DESKTOP}>Desktop</option>
-                <option value={View.TABLET}>Tablet</option>
                 <option value={View.MOBILE}>Mobile</option>
+                <option value={View.TABLET}>Tablet</option>
+                <option value={View.DESKTOP}>Desktop</option>
             </select>
             <div
-                className={`h-[600px] overflow-hidden border-2 border-slate-400 grid`}
+                className={`h-[630px] overflow-hidden border-2 border-slate-400 grid`}
                 style={{
                     width: View.MOBILE
                 }}
             >
-                {isLoading ? 
+                {mondayItemIsLoading ? 
                     <Loader /> :
                     <iframe 
-                        src={template}
+                        src={templatePath}
                         style={{
                             width: `${scale * 100}%`,
                             height: `${scale * 100}%`,
