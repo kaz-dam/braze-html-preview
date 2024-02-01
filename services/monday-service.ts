@@ -63,19 +63,22 @@ class MondayService {
     }
 
     prepareTranslationDataFromMonday(data: MondayResponse): LokaliseRelatedValues {
-        const lokaliseColumn = this.parseColumnsForName(data.data?.items[0], "lokalise");
+        const lokaliseProjectColumn = this.parseColumnsForName(data.data?.items[0], "lokalise");
         const languageColumn = this.parseColumnsForName(data.data?.items[0], "language");
+        const lokaliseTaskColumn = this.parseColumnsForName(data.data?.items[0], "lokalise task");
 
-        if (lokaliseColumn && languageColumn) {
+        if (lokaliseProjectColumn && languageColumn && lokaliseTaskColumn) {
             return {
-                lokaliseUrl: lokaliseColumn?.value.url,
+                lokaliseProjectUrl: lokaliseProjectColumn?.value.url,
+                lokaliseTaskUrl: lokaliseTaskColumn?.value.url ,
                 parentItemId: Number(data.data?.items[0].parent_item?.id),
                 language: languageColumn?.text
             };
         }
 
         return {
-            lokaliseUrl: "",
+            lokaliseProjectUrl: "",
+            lokaliseTaskUrl: "",
             parentItemId: 0,
             language: ""
         };

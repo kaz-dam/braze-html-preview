@@ -6,5 +6,5 @@ export async function GET(
     request: NextRequest,
     { params }: TranslationsRouteParams
 ) {
-    return TranslationController.getTranslationByProjectId(request, params);
+    return TranslationController.getTranslationByMondayId(request, params);
 }

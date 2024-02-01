@@ -1,6 +1,5 @@
 "use client";
 
-import { useTranslation } from "@/context/translation-context";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useSWRConfig } from "swr";
@@ -13,8 +12,8 @@ const SearchItem = () => {
     const [ mondayParentId, setMondayParentId ] = useState<number>();
     const [ projectId, setProjectId ] = useState<string>();
     const [ language, setLanguage ] = useState<string>();
-    const { key, translation, isLoading, error } = useLokaliseTranslation((mondayParentId ?? mondayId), projectId, language);
     const { mutate } = useSWRConfig();
+    const { key, translation, isLoading, error } = useLokaliseTranslation(mondayId, projectId, language);
 
     const onInputChange = (event: any) => {
         setMondayId(parseInt(event.target.value));
@@ -32,7 +31,6 @@ const SearchItem = () => {
     }, []);
 
     useEffect(() => {
-        console.log(translation);
         if (translation?.projectId) {
             setProjectId(translation?.projectId);
             setMondayParentId(translation.mondayParentId);

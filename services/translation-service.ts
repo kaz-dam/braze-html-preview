@@ -1,7 +1,8 @@
+import { TranslationRouteResponse } from './../types/translations';
 import { LokaliseRelatedValues } from "@/types/monday";
 import { DownloadBundle } from "@/types/translations";
-import { LokaliseApi, PaginatedResult } from "@lokalise/node-api";
-import JSZip from "jszip";
+import { Key, LokaliseApi, PaginatedResult, Translation, TranslationData } from "@lokalise/node-api";
+import { randomUUID } from 'crypto';
 
 class TranslationService {
     private lokaliseApi: LokaliseApi;
@@ -33,6 +34,20 @@ class TranslationService {
         });
     }
 
+    async getTaskTranslations(projectId: string, taskId: number): Promise<PaginatedResult<Translation>> {
+        return this.lokaliseApi.translations().list({
+            project_id: projectId,
+            filter_active_task_id: taskId,
+        });
+    }
+
+    async getKeys(projectId: string, keyIds: number[]): Promise<PaginatedResult<Key>> {
+        return this.lokaliseApi.keys().list({
+            project_id: projectId,
+            filter_key_ids: keyIds.join(",")
+        });
+    }
+
     async downloadBundle(projectId: string): Promise<any> {
         const bundle: DownloadBundle = await this.getTranslationFiles(projectId);
         const response: any = (await fetch(bundle.bundle_url)).arrayBuffer();
@@ -41,20 +56,15 @@ class TranslationService {
 
     async getTranslationFileContent(
         projectId: string,
+        taskId: number,
         mondayId: number,
         language: string
-    ): Promise<JSON> {
-        const bundle = await this.downloadBundle(projectId);
-        const zip = await JSZip.loadAsync(bundle);
+    ): Promise<any> {
+        const taskTranslations = await this.getTaskTranslations(projectId, taskId);
+        const keyIds = taskTranslations.items.map((translation: any) => translation.key_id);
+        const taskKeys = await this.getKeys(projectId, keyIds);
 
-        const fileName = this.parseFileNames(zip.files, mondayId, language);
-        
-        if (!fileName) {
-            return JSON.parse("{}");
-        }
-
-        const fileContents = await zip.file(fileName)?.async("string");
-        return JSON.parse(fileContents || "{}");
+        return this.mapKeyNamesToTranslations(taskTranslations.items, taskKeys.items);
     }
 
     setProjectId(projectId: string): void {
@@ -72,6 +82,13 @@ class TranslationService {
         return projectId;
     }
 
+    parseTaskIdFromUrl(taskUrl: string): number {
+        const taskUrlObject = new URL(taskUrl);
+        const taskId: number = Number(taskUrlObject.searchParams.get("filter")?.split("_")[1]);
+
+        return taskId;
+    }
+
     parseFileNames(
         files: any,
         mondayId: number,
@@ -86,6 +103,25 @@ class TranslationService {
                 item.includes(language)
             );
         });
+    }
+
+    mapKeyNamesToTranslations(taskTranslations: Translation[], taskKeys: Key[]) {
+        const translations: any = {};
+
+        taskKeys.forEach((key: Key) => {
+            const keyName = (
+                key.key_name.web ||
+                key.key_name.ios ||
+                key.key_name.android ||
+                key.key_name.other
+            ) ?? randomUUID();
+
+            translations[keyName] = taskTranslations.find((translation: Translation) => {
+                return translation.key_id === key.key_id;
+            })?.translation;
+        });
+
+        return translations;
     }
 }
 
