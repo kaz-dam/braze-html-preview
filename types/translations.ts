@@ -1,11 +1,5 @@
 import { Dispatch } from "react";
 
-export type DownloadBundle = {
-    project_id: string;
-    bundle_url: string;
-    branch?: string;
-};
-
 export type TranslationFile = { [key: string]: string } | JSON;
 
 export type TranslationContextType = TranslationIds & {
@@ -27,9 +21,6 @@ export type TranslationsRouteParams = {
 };
 
 export type TranslationRouteResponse = {
-    projectId: string;
-    mondayParentId?: number;
-    language?: string;
     pathToFile?: string;
 };
 
@@ -39,5 +30,3 @@ export type LokaliseTranslationHook = {
     error: any;
     isLoading: boolean;
 };
-
-export type LanguageCode = "ENG" | "SPA" | "DAN" | "SWE" | "NOR" | "FIN" | "POL" | "POR" | "RON" | "HUN" | "CES" | "SLV" | "SLK" | "SRP" | "MKD" | "BUL" | "HRV" | "NLD" | "FRA" | "LAV" | "BOS" | "CNR" | "MDA"

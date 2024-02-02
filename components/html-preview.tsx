@@ -2,17 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Loader from "./ui/loader";
-
-enum View {
-    MOBILE = 450,
-    TABLET = 750,
-    DESKTOP = 1100
-};
-
-type HtmlPreviewProps = {
-    templatePath: string;
-    mondayItemIsLoading?: boolean;
-};
+import { HtmlPreviewProps, View } from "@/types/preview";
 
 const HtmlPreview = ({ templatePath, mondayItemIsLoading }: HtmlPreviewProps) => {
     const [ view, setView ] = useState<View>(View.MOBILE);
