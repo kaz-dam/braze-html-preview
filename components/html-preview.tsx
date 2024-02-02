@@ -16,7 +16,7 @@ const HtmlPreview = () => {
     }, [selectedView, templatePath]);
 
     return (
-        <div className="flex flex-col justify-center items-center gap-4 w-full">
+        <div className="flex justify-center items-center w-full h-screen">
             <div
                 className={`h-[630px] overflow-hidden border-2 border-slate-400 grid`}
                 style={{

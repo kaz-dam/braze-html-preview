@@ -13,6 +13,10 @@ const config: Config = {
                 "gradient-conic":
                     "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
             },
+            colors: {
+                "brand-primary": process.env.BRAND_COLOR || "#FF00FF",
+                "brand-secondary": process.env.BRAND_SECONDARY_COLOR || "#FF00FF",
+            }
         },
     },
     plugins: [require("@tailwindcss/forms")],
