@@ -4,11 +4,6 @@ export enum View {
     DESKTOP = 1100
 };
 
-export type HtmlPreviewProps = {
-    templatePath: string;
-    mondayItemIsLoading?: boolean;
-};
-
 export type LoaderProps = {
     className?: string;
 };

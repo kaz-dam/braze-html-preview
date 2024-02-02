@@ -2,29 +2,21 @@
 
 import { useEffect, useState } from "react";
 import Loader from "./ui/loader";
-import { HtmlPreviewProps, View } from "@/types/component";
+import { View } from "@/types/component";
+import { usePreview } from "@/context/preview-context";
 
-const HtmlPreview = ({ templatePath, mondayItemIsLoading }: HtmlPreviewProps) => {
-    const [ view, setView ] = useState<View>(View.MOBILE);
+const HtmlPreview = () => {
     const [ scale, setScale ] = useState<number>(1);
+    const { templatePath, mondayItemIsLoading, selectedView } = usePreview();
 
     useEffect(() => {
         const actualIframeWidth = View.MOBILE;
-        const scaleValue = view / actualIframeWidth;
+        const scaleValue = selectedView / actualIframeWidth;
         setScale(scaleValue);
-    }, [view, templatePath]);
-
-    const onViewChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
-        setView(parseInt(event.target.value) as View);
-    };
+    }, [selectedView, templatePath]);
 
     return (
         <div className="flex flex-col justify-center items-center gap-4 w-full">
-            <select name="" id="" onChange={onViewChange} className="max-w-fit">
-                <option value={View.MOBILE}>Mobile</option>
-                <option value={View.TABLET}>Tablet</option>
-                <option value={View.DESKTOP}>Desktop</option>
-            </select>
             <div
                 className={`h-[630px] overflow-hidden border-2 border-slate-400 grid`}
                 style={{
