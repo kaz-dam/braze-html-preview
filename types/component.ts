@@ -8,3 +8,7 @@ export type HtmlPreviewProps = {
     templatePath: string;
     mondayItemIsLoading?: boolean;
 };
+
+export type LoaderProps = {
+    className?: string;
+};

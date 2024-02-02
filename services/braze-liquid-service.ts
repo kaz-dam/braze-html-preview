@@ -3,6 +3,7 @@ import path from "path";
 import ITemplate from "brazejs/dist/template/itemplate";
 import templateService from "./template-service";
 import LiquidContextModel from "@/models/liquid-context-model";
+import { TranslationObject } from "@/types/translations";
 
 class BrazeLiquidService {
     private liquidEngine: Liquid;
@@ -21,11 +22,11 @@ class BrazeLiquidService {
         this.liquidContext.setContentBlockRoot(path.join(process.cwd(), "public", "temp", "content_blocks"));
     }
 
-    parseString(string: string) {
+    parseString(string: string): ITemplate[] {
         return this.liquidEngine.parse(string);
     }
 
-    addTranslationToContext(translation: any): void {
+    addTranslationToContext(translation: TranslationObject): void {
         if (!this.liquidContext) {
             throw new Error("Liquid context is undefined");
         }

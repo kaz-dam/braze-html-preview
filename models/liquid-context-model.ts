@@ -1,4 +1,5 @@
 import { LiquidContext, LiquidContextSecret } from "@/types/templates";
+import { TranslationObject } from "@/types/translations";
 
 class LiquidContextModel {
     private context: LiquidContext;
@@ -21,7 +22,7 @@ class LiquidContextModel {
         this.context.campaign.name = campaignName;
     }
 
-    setTranslationObject(translation: any): void {
+    setTranslationObject(translation: TranslationObject): void {
         this.context.json_data = translation;
     }
 

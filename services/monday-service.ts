@@ -1,4 +1,10 @@
-import { LokaliseRelatedValues, MondayColumn, MondayQueryData, MondayResponse, MondayResponseItem } from "@/types/monday";
+import {
+    LokaliseRelatedValues,
+    MondayColumn,
+    MondayQueryData,
+    MondayResponse,
+    MondayResponseItem
+} from "@/types/monday";
 
 
 class MondayService {

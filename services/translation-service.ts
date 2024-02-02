@@ -1,3 +1,4 @@
+import { TranslationObject } from "@/types/translations";
 import { Key, LokaliseApi, PaginatedResult, Translation } from "@lokalise/node-api";
 import { randomUUID } from 'crypto';
 
@@ -31,17 +32,17 @@ class TranslationService {
     async getTranslationFileContent(
         projectId: string,
         taskId: number
-    ): Promise<any> {
+    ): Promise<TranslationObject> {
         const taskTranslations = await this.getTaskTranslations(projectId, taskId);
-        const keyIds = taskTranslations.items.map((translation: any) => translation.key_id);
+        const keyIds = taskTranslations.items.map((translation: Translation) => translation.key_id);
         const taskKeys = await this.getKeys(projectId, keyIds);
 
         return this.mapKeyNamesToTranslations(taskTranslations.items, taskKeys.items);
     }
 
-    parseProjectIdFromUrl(projectUrl: string): any {
-        let projectId: any = projectUrl.split("/");
-        projectId = projectId.at(projectId.length - 2);
+    parseProjectIdFromUrl(projectUrl: string): string {
+        const urlParts = projectUrl.split("/");
+        const projectId = urlParts.at(urlParts.length - 2) || "";
 
         return projectId;
     }
@@ -56,11 +57,11 @@ class TranslationService {
     mapKeyNamesToTranslations(
         taskTranslations: Translation[],
         taskKeys: Key[]
-    ) {
-        const translations: any = {};
+    ): TranslationObject {
+        const translations: TranslationObject = {};
 
         taskKeys.forEach((key: Key) => {
-            const keyName = (
+            const keyName: string = (
                 key.key_name.web ||
                 key.key_name.ios ||
                 key.key_name.android ||
@@ -69,7 +70,7 @@ class TranslationService {
 
             translations[keyName] = taskTranslations.find((translation: Translation) => {
                 return translation.key_id === key.key_id;
-            })?.translation;
+            })?.translation || "";
         });
 
         return translations;

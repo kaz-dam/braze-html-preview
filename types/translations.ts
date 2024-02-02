@@ -1,6 +1,6 @@
 import { Dispatch } from "react";
 
-export type TranslationFile = { [key: string]: string } | JSON;
+export type TranslationObject = { [key: string]: string };
 
 export type TranslationContextType = TranslationIds & {
     setMondayId: Dispatch<number | undefined>;
@@ -27,6 +27,6 @@ export type TranslationRouteResponse = {
 export type LokaliseTranslationHook = {
     key: string;
     translation: TranslationRouteResponse;
-    error: any;
+    error: Error | null;
     isLoading: boolean;
 };

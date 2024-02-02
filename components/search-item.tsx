@@ -12,16 +12,17 @@ const SearchItem = () => {
     const { mutate } = useSWRConfig();
     const { key, translation, isLoading, error } = useLokaliseTranslation(mondayId);
 
-    const onInputChange = (event: any) => {
+    const onInputChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
         setMondayId(parseInt(event.target.value));
     };
 
-    const refreshData = () => {
+    const refreshData = (): void => {
         mutate(key);
     };
 
     useEffect(() => {
-        const mondayidParam = searchParams.get("mondayid");
+        const mondayidParam: string | null = searchParams.get("mondayid");
+
         if (mondayidParam) {
             setMondayId(parseInt(mondayidParam));
         }

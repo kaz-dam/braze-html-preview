@@ -6,7 +6,7 @@ import { TranslationIds, TranslationRouteResponse } from "@/types/translations";
 import { NextRequest, NextResponse } from "next/server";
 
 class TranslationController {
-    static async getTranslationByMondayId(req: NextRequest, params: TranslationIds) {
+    static async getTranslationByMondayId(req: NextRequest, params: TranslationIds): Promise<NextResponse> {
         const mondayId = params.mondayId;
 
         if (!mondayId) return NextResponse.json("Please type in the monday id");

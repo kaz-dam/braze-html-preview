@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Loader from "./ui/loader";
-import { HtmlPreviewProps, View } from "@/types/preview";
+import { HtmlPreviewProps, View } from "@/types/component";
 
 const HtmlPreview = ({ templatePath, mondayItemIsLoading }: HtmlPreviewProps) => {
     const [ view, setView ] = useState<View>(View.MOBILE);
@@ -14,7 +14,7 @@ const HtmlPreview = ({ templatePath, mondayItemIsLoading }: HtmlPreviewProps) =>
         setScale(scaleValue);
     }, [view, templatePath]);
 
-    const onViewChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const onViewChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
         setView(parseInt(event.target.value) as View);
     };
 

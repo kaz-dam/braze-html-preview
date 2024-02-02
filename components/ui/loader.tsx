@@ -1,8 +1,5 @@
 import { cn } from "@/lib/utils"
-
-type LoaderProps = {
-    className?: string;
-};
+import { LoaderProps } from "@/types/component";
 
 const Loader = ({ className }: LoaderProps) => {
     return (
