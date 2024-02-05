@@ -36,11 +36,12 @@ const SearchItem = () => {
 
     return (
         <>
+            <h2 className="text-xl text-center mb-2">Template preview</h2>
             <div className="flex flex-col justify-center gap-2">
                 {(!searchParams.has("mondayid") || !searchParams.get("mondayid")) && (
-                    <input type="text" placeholder="Enter Monday.com ID" onChange={onInputChange} />
+                    <input type="text" placeholder="Enter Monday.com subitem ID..." onChange={onInputChange} className=" text-black rounded border-none placeholder:text-sm" />
                 )}
-                <button className="px-4 py-2 rounded-sm bg-brand-primary text-brand-secondary disabled:bg-opacity-70" onClick={refreshData} disabled={!mondayId}>Refresh</button>
+                <button className="px-4 py-2 rounded bg-brand-primary text-white disabled:bg-opacity-70" onClick={refreshData} disabled={!mondayId}>Refresh</button>
             </div>
         </>
     );
