@@ -22,18 +22,22 @@ class TemplateService {
     ): Promise<string>  {
         let filePath: string;
 
-        if (isContentBlock) {
-            const dirPath = path.join(process.cwd(), "public", "temp", "content_blocks");
-            await mkdirSync(dirPath, { recursive: true });
-            filePath = path.join(dirPath, templateName);
-        } else {
-            filePath = path.join(process.cwd(), "public", "temp", templateName);
+        try {
+            if (isContentBlock) {
+                const dirPath = path.join(process.cwd(), "public", "temp", "content_blocks");
+                await mkdirSync(dirPath, { recursive: true });
+                filePath = path.join(dirPath, templateName);
+            } else {
+                filePath = path.join(process.cwd(), "public", "temp", templateName);
+            }
+            const urlPath = path.join("temp", templateName) + "?v=" + randomUUID();
+    
+            await writeFile(filePath, templateContent);
+    
+            return urlPath;
+        } catch (error: any) {
+            throw new Error("Error creating local file.");
         }
-        const urlPath = path.join("temp", templateName) + "?v=" + randomUUID();
-
-        await writeFile(filePath, templateContent);
-
-        return urlPath;
     }
 
     parseTemplateForContentBlocks(templateContent: string): string[] {
@@ -48,8 +52,12 @@ class TemplateService {
     }
 
     getTemplate(channel: Channel): Promise<OctokitResponse<OctokitData, number>> {
-        const path = channel + "-template.html";
-        return this.request(path);
+        try {
+            const path = channel + "-template.html";
+            return this.request(path);
+        } catch (error: any) {
+            throw new Error("Error fetching template from GitHub API.");
+        }
     }
 
     getTemplateContent(octoresponse: OctokitResponse<OctokitData, number>): string {

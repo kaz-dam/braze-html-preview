@@ -36,7 +36,7 @@ class LiquidContextModel {
         return process.env[envName] || "";
     }
 
-    getContextObejct(): LiquidContext {
+    getContextObject(): LiquidContext {
         return this.context;
     }
 }

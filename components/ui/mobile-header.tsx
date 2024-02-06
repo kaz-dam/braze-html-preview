@@ -7,7 +7,6 @@ const MobileHeader = ({ sidebarRef }: any) => {
     const [ isOpen, setIsOpen ] = useState<boolean>(false);
 
     const openSidebarOnMobile = () => {
-        console.log(sidebarRef);
         sidebarRef.current?.classList.toggle("-translate-x-full");
         setIsOpen(!isOpen);
     };

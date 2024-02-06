@@ -46,26 +46,27 @@ class MondayService {
 
             return this.prepareTranslationDataFromMonday(data);
         } catch (error) {
-            console.log(error);
-            return null;
+            throw new Error("Error fetching data from Monday.com API.");
         }
     }
 
-    parseColumnsForName(item: MondayResponseItem, columnName: string): MondayColumn | null {
-        for (const column of item.column_values) {
-            const columnTitle = column.title.toLowerCase();
-
-            if (columnTitle.includes(columnName.toLowerCase())) {
-                return {
-                    ...column,
-                    value: typeof(column.value) === "string" ?
-                        JSON.parse(column.value) :
-                        column.value
-                };
+    parseColumnsForName(item: MondayResponseItem, columnName: string): MondayColumn | undefined {
+        try {
+            for (const column of item.column_values) {
+                const columnTitle = column.title.toLowerCase();
+    
+                if (columnTitle.includes(columnName.toLowerCase())) {
+                    return {
+                        ...column,
+                        value: typeof(column.value) === "string" ?
+                            JSON.parse(column.value) :
+                            column.value
+                    };
+                }
             }
+        } catch (error: any) {
+            throw new Error("Error parsing columns for name.");
         }
-
-        return null;
     }
 
     prepareTranslationDataFromMonday(data: MondayResponse): LokaliseRelatedValues {
@@ -91,13 +92,17 @@ class MondayService {
     }
 
     async requestToMondayApi(queryData: MondayQueryData): Promise<MondayResponse> {
-        const response: Response = await fetch(this.mondayUrl, {
-            method: "POST",
-            headers: this.httpHeaders,
-            body: JSON.stringify(queryData)
-        });
-
-        return response.json();
+        try {
+            const response: Response = await fetch(this.mondayUrl, {
+                method: "POST",
+                headers: this.httpHeaders,
+                body: JSON.stringify(queryData)
+            });
+    
+            return response.json();
+        } catch (error: any) {
+            throw new Error("Error making request to Monday.com API.");
+        }
     }
 }
 

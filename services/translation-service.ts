@@ -33,11 +33,15 @@ class TranslationService {
         projectId: string,
         taskId: number
     ): Promise<TranslationObject> {
-        const taskTranslations = await this.getTaskTranslations(projectId, taskId);
-        const keyIds = taskTranslations.items.map((translation: Translation) => translation.key_id);
-        const taskKeys = await this.getKeys(projectId, keyIds);
+        try {
+            const taskTranslations = await this.getTaskTranslations(projectId, taskId);
+            const keyIds = taskTranslations.items.map((translation: Translation) => translation.key_id);
+            const taskKeys = await this.getKeys(projectId, keyIds);
 
-        return this.mapKeyNamesToTranslations(taskTranslations.items, taskKeys.items);
+            return this.mapKeyNamesToTranslations(taskTranslations.items, taskKeys.items);
+        } catch (error) {
+            throw new Error("Error fetching data from Lokalise API.");
+        }
     }
 
     parseProjectIdFromUrl(projectUrl: string): string {

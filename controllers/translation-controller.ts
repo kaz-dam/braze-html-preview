@@ -3,19 +3,20 @@ import mondayService from "@/services/monday-service";
 import templateService from "@/services/template-service";
 import translationService from "@/services/translation-service";
 import { TranslationIds, TranslationRouteResponse } from "@/types/translations";
-import { NextRequest, NextResponse } from "next/server";
+// import { Request, NextResponse } from "next/server";
+
+// TODO: Add error handling
+// TODO: Add centralized response handling
 
 class TranslationController {
-    static async getTranslationByMondayId(req: NextRequest, params: TranslationIds): Promise<NextResponse> {
+    static async getTranslationByMondayId(req: Request, params: TranslationIds): Promise<TranslationRouteResponse> {
         const mondayId = params.mondayId;
 
-        if (!mondayId) return NextResponse.json("Please type in the monday id");
-
-        const lokaliseInfo = await mondayService.getMondayItemLokaliseColumn(Number(mondayId));
+        try {
+            const lokaliseInfo = await mondayService.getMondayItemLokaliseColumn(Number(mondayId));
         
-        if (lokaliseInfo) {
-            const projectId = translationService.parseProjectIdFromUrl(lokaliseInfo?.lokaliseProjectUrl);
-            const taskId = translationService.parseTaskIdFromUrl(lokaliseInfo?.lokaliseTaskUrl);
+            const projectId = translationService.parseProjectIdFromUrl(lokaliseInfo?.lokaliseProjectUrl || "");
+            const taskId = translationService.parseTaskIdFromUrl(lokaliseInfo?.lokaliseTaskUrl || "");
             const translation = await translationService.getTranslationFileContent(projectId, taskId);
 
             const template = await templateService.getTemplate("iam");
@@ -33,10 +34,10 @@ class TranslationController {
                 pathToFile
             };
             
-            return NextResponse.json(response);
+            return response;
+        } catch (error: any) {
+            throw error;
         }
-
-        return NextResponse.json("No lokalise url found in monday.com");
     }
 }
 

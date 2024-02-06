@@ -17,29 +17,37 @@ class BrazeLiquidService {
     }
 
     async setContext(): Promise<void> {
-        const context = await templateService.getLiquidContext();
-        this.liquidContext = new LiquidContextModel(JSON.parse(templateService.getTemplateContent(context)));
-        this.liquidContext.setContentBlockRoot(path.join(process.cwd(), "public", "temp", "content_blocks"));
+        try {
+            const context = await templateService.getLiquidContext();
+            this.liquidContext = new LiquidContextModel(JSON.parse(templateService.getTemplateContent(context)));
+            this.liquidContext.setContentBlockRoot(path.join(process.cwd(), "public", "temp", "content_blocks"));
+        } catch (error: any) {
+            throw new Error("Error setting liquid context.");
+        }
     }
 
     parseString(string: string): ITemplate[] {
-        return this.liquidEngine.parse(string);
+        try {
+            return this.liquidEngine.parse(string);
+        } catch (error: any) {
+            throw new Error("Error parsing liquid string.");
+        }
     }
 
     addTranslationToContext(translation: TranslationObject): void {
-        if (!this.liquidContext) {
-            throw new Error("Liquid context is undefined");
+        try {
+            this.liquidContext?.setTranslationObject(translation);
+        } catch (error: any) {
+            throw new Error("Error adding translation to liquid context.");
         }
-
-        this.liquidContext.setTranslationObject(translation);
     }
 
     renderTemplate(template: ITemplate[]): Promise<string> {
-        if (!this.liquidContext) {
-            throw new Error("Liquid context is undefined");
+        try {
+            return this.liquidEngine.render(template, this.liquidContext?.getContextObject());
+        } catch (error: any) {
+            throw new Error("Error rendering liquid template.");
         }
-        
-        return this.liquidEngine.render(template, this.liquidContext.getContextObejct());
     }
 }
 

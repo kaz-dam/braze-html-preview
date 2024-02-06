@@ -12,6 +12,7 @@ const useLokaliseTranslation = (
         revalidateOnFocus: false,
         revalidateOnReconnect: false
     });
+    console.log(data);
 
     return {
         key,
