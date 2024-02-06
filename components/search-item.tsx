@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useSWRConfig } from "swr";
 import useLokaliseTranslation from "@/hooks/use-lokalise-translation";
 import { usePreview } from "@/context/preview-context";
+import { toast } from "react-toastify";
 
 const SearchItem = () => {
     const searchParams = useSearchParams();
@@ -32,6 +33,10 @@ const SearchItem = () => {
     useEffect(() => {
         setTemplatePath(translation?.pathToFile ? translation.pathToFile : "");
         setMondayItemIsLoading(isLoading);
+        
+        toast(error?.message, {
+            type: !error?.message ? "success" : "error"
+        });
     }, [isLoading]);
 
     return (

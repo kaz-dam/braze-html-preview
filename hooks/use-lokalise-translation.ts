@@ -16,7 +16,7 @@ const useLokaliseTranslation = (
     return {
         key,
         translation: data?.data,
-        error,
+        error: data?.success ? null : data,
         isLoading
     };
 };
