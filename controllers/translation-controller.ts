@@ -3,10 +3,6 @@ import mondayService from "@/services/monday-service";
 import templateService from "@/services/template-service";
 import translationService from "@/services/translation-service";
 import { TranslationIds, TranslationRouteResponse } from "@/types/translations";
-// import { Request, NextResponse } from "next/server";
-
-// TODO: Add error handling
-// TODO: Add centralized response handling
 
 class TranslationController {
     static async getTranslationByMondayId(req: Request, params: TranslationIds): Promise<TranslationRouteResponse> {
@@ -19,6 +15,7 @@ class TranslationController {
             const taskId = translationService.parseTaskIdFromUrl(lokaliseInfo?.lokaliseTaskUrl || "");
             const translation = await translationService.getTranslationFileContent(projectId, taskId);
 
+            // const template = await templateService.getTemplate(lokaliseInfo?.channel ?? "iam");
             const template = await templateService.getTemplate("iam");
             const templateContent = templateService.getTemplateContent(template);
             const contentBlocks = templateService.parseTemplateForContentBlocks(templateContent);
@@ -36,6 +33,7 @@ class TranslationController {
             
             return response;
         } catch (error: any) {
+            console.error(new Date(), error);
             throw error;
         }
     }

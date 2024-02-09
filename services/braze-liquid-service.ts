@@ -4,6 +4,7 @@ import ITemplate from "brazejs/dist/template/itemplate";
 import templateService from "./template-service";
 import LiquidContextModel from "@/models/liquid-context-model";
 import { TranslationObject } from "@/types/translations";
+import ApiError from "@/lib/api-error";
 
 class BrazeLiquidService {
     private liquidEngine: Liquid;
@@ -11,43 +12,39 @@ class BrazeLiquidService {
 
     constructor() {
         this.liquidEngine = new Liquid({
-            cache: true
+            cache: false
         });
         this.setContext();
     }
 
     async setContext(): Promise<void> {
-        try {
-            const context = await templateService.getLiquidContext();
-            this.liquidContext = new LiquidContextModel(JSON.parse(templateService.getTemplateContent(context)));
-            this.liquidContext.setContentBlockRoot(path.join(process.cwd(), "public", "temp", "content_blocks"));
-        } catch (error: any) {
-            throw new Error("Error setting liquid context.");
-        }
+        const context = await templateService.getLiquidContext();
+        this.liquidContext = new LiquidContextModel(JSON.parse(templateService.getTemplateContent(context)));
+        this.liquidContext.setContentBlockRoot(path.join(process.cwd(), "public", "temp", "content_blocks"));
     }
 
     parseString(string: string): ITemplate[] {
-        try {
-            return this.liquidEngine.parse(string);
-        } catch (error: any) {
-            throw new Error("Error parsing liquid string.");
+        const parsedHtml = this.liquidEngine.parse(string);
+
+        if (!parsedHtml) {
+            throw new ApiError(500, "Error parsing liquid template.");
         }
+
+        return parsedHtml;
     }
 
     addTranslationToContext(translation: TranslationObject): void {
-        try {
-            this.liquidContext?.setTranslationObject(translation);
-        } catch (error: any) {
-            throw new Error("Error adding translation to liquid context.");
-        }
+        this.liquidContext?.setTranslationObject(translation);
     }
 
-    renderTemplate(template: ITemplate[]): Promise<string> {
-        try {
-            return this.liquidEngine.render(template, this.liquidContext?.getContextObject());
-        } catch (error: any) {
-            throw new Error("Error rendering liquid template.");
+    async renderTemplate(template: ITemplate[]): Promise<string> {
+        const renderedHtml = await this.liquidEngine.render(template, this.liquidContext?.getContextObject());
+
+        if (!renderedHtml) {
+            throw new ApiError(500, "Error rendering liquid template.");
         }
+
+        return renderedHtml;
     }
 }
 

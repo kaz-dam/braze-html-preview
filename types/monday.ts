@@ -1,3 +1,5 @@
+import { Channel } from "./templates";
+
 export type MondayQueryData = {
     query: string;
     variables: {
@@ -10,6 +12,7 @@ export type LokaliseRelatedValues = {
     lokaliseTaskUrl: string;
     parentItemId: number;
     language: string;
+    channel: Channel;
 };
 
 export type MondayColumn = {
@@ -27,6 +30,7 @@ export type MondayLinkColumn = {
 export type MondayResponseItem = {
     parent_item: {
         id: string;
+        column_values: MondayColumn[];
     };
     column_values: MondayColumn[];
 };

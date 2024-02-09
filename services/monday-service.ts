@@ -1,3 +1,4 @@
+import ApiError from "@/lib/api-error";
 import {
     LokaliseRelatedValues,
     MondayColumn,
@@ -5,6 +6,7 @@ import {
     MondayResponse,
     MondayResponseItem
 } from "@/types/monday";
+import { Channel } from "@/types/templates";
 
 
 class MondayService {
@@ -26,6 +28,12 @@ class MondayService {
             items (ids: $itemId) {
                 parent_item {
                     id
+                    column_values {
+                        id
+                        title
+                        value
+                        text
+                    }
                 }
                 column_values {
                     id
@@ -41,53 +49,52 @@ class MondayService {
             variables: { itemId }
         };
 
-        try {
-            const data: MondayResponse = await this.requestToMondayApi(queryData);
+        const data: MondayResponse = await this.requestToMondayApi(queryData);
 
-            return this.prepareTranslationDataFromMonday(data);
-        } catch (error) {
-            throw new Error("Error fetching data from Monday.com API.");
+        if (!data.data?.items[0].column_values.length) {
+            throw new ApiError(404, "Monday item not found.");
         }
+
+        return this.prepareTranslationDataFromMonday(data);
     }
 
-    parseColumnsForName(item: MondayResponseItem, columnName: string): MondayColumn | undefined {
-        try {
-            for (const column of item.column_values) {
-                const columnTitle = column.title.toLowerCase();
-    
-                if (columnTitle.includes(columnName.toLowerCase())) {
-                    return {
-                        ...column,
-                        value: typeof(column.value) === "string" ?
-                            JSON.parse(column.value) :
-                            column.value
-                    };
-                }
+    parseColumnsForName(columns: MondayColumn[], columnName: string): MondayColumn | string {
+        for (const column of columns) {
+            const columnTitle = column.title.toLowerCase();
+
+            if (columnTitle.includes(columnName.toLowerCase())) {
+                return {
+                    ...column,
+                    value: typeof(column.value) === "string" ?
+                        JSON.parse(column.value) :
+                        column.value
+                };
             }
-        } catch (error: any) {
-            throw new Error("Error parsing columns for name.");
         }
+
+        return columnName;
     }
 
     prepareTranslationDataFromMonday(data: MondayResponse): LokaliseRelatedValues {
-        const lokaliseProjectColumn = this.parseColumnsForName(data.data?.items[0], "lokalise");
-        const languageColumn = this.parseColumnsForName(data.data?.items[0], "language");
-        const lokaliseTaskColumn = this.parseColumnsForName(data.data?.items[0], "lokalise task");
+        const lokaliseProjectColumn = this.parseColumnsForName(data.data?.items[0].column_values, "lokalise");
+        const languageColumn = this.parseColumnsForName(data.data?.items[0].column_values, "language");
+        const lokaliseTaskColumn = this.parseColumnsForName(data.data?.items[0].column_values, "lokalise task");
+        const parentItemChannelColumn = this.parseColumnsForName(data.data?.items[0].parent_item?.column_values, "channel");
 
-        if (lokaliseProjectColumn && languageColumn && lokaliseTaskColumn) {
-            return {
-                lokaliseProjectUrl: lokaliseProjectColumn?.value.url,
-                lokaliseTaskUrl: lokaliseTaskColumn?.value.url ,
-                parentItemId: Number(data.data?.items[0].parent_item?.id),
-                language: languageColumn?.text
-            };
+        if (typeof(lokaliseProjectColumn) === "string" || 
+            typeof(lokaliseTaskColumn) === "string" || 
+            typeof(parentItemChannelColumn) === "string" || 
+            typeof(languageColumn) === "string") {
+            const columnName = lokaliseProjectColumn || lokaliseTaskColumn || parentItemChannelColumn || languageColumn;
+            throw new ApiError(404, `Monday item column "${columnName}" not found.`);
         }
 
         return {
-            lokaliseProjectUrl: "",
-            lokaliseTaskUrl: "",
-            parentItemId: 0,
-            language: ""
+            lokaliseProjectUrl: lokaliseProjectColumn?.value?.url,
+            lokaliseTaskUrl: lokaliseTaskColumn?.value?.url,
+            parentItemId: Number(data.data?.items[0].parent_item?.id),
+            channel: parentItemChannelColumn?.text?.toLowerCase() as Channel,
+            language: languageColumn?.text
         };
     }
 

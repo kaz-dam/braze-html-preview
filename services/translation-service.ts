@@ -1,3 +1,4 @@
+import ApiError from "@/lib/api-error";
 import { TranslationObject } from "@/types/translations";
 import { Key, LokaliseApi, PaginatedResult, Translation } from "@lokalise/node-api";
 import { randomUUID } from 'crypto';
@@ -13,35 +14,43 @@ class TranslationService {
         projectId: string,
         taskId: number
     ): Promise<PaginatedResult<Translation>> {
-        return this.lokaliseApi.translations().list({
+        const translations = await this.lokaliseApi.translations().list({
             project_id: projectId,
             filter_active_task_id: taskId,
         });
+
+        if (!translations.items) {
+            throw new ApiError(404, "No translations found for the Lokalise task.");
+        }
+
+        return translations;
     }
 
     async getKeys(
         projectId: string,
         keyIds: number[]
     ): Promise<PaginatedResult<Key>> {
-        return this.lokaliseApi.keys().list({
+        const lokaliseKeys = await this.lokaliseApi.keys().list({
             project_id: projectId,
             filter_key_ids: keyIds.join(",")
         });
+
+        if (!lokaliseKeys.items) {
+            throw new ApiError(404, "No keys found for the Lokalise project.");
+        }
+
+        return lokaliseKeys;
     }
 
     async getTranslationFileContent(
         projectId: string,
         taskId: number
     ): Promise<TranslationObject> {
-        try {
-            const taskTranslations = await this.getTaskTranslations(projectId, taskId);
-            const keyIds = taskTranslations.items.map((translation: Translation) => translation.key_id);
-            const taskKeys = await this.getKeys(projectId, keyIds);
+        const taskTranslations = await this.getTaskTranslations(projectId, taskId);
+        const keyIds = taskTranslations.items.map((translation: Translation) => translation.key_id);
+        const taskKeys = await this.getKeys(projectId, keyIds);
 
-            return this.mapKeyNamesToTranslations(taskTranslations.items, taskKeys.items);
-        } catch (error) {
-            throw new Error("Error fetching data from Lokalise API.");
-        }
+        return this.mapKeyNamesToTranslations(taskTranslations.items, taskKeys.items);
     }
 
     parseProjectIdFromUrl(projectUrl: string): string {
@@ -64,7 +73,7 @@ class TranslationService {
     ): TranslationObject {
         const translations: TranslationObject = {};
 
-        taskKeys.forEach((key: Key) => {
+        for (const key of taskKeys) {
             const keyName: string = (
                 key.key_name.web ||
                 key.key_name.ios ||
@@ -75,7 +84,7 @@ class TranslationService {
             translations[keyName] = taskTranslations.find((translation: Translation) => {
                 return translation.key_id === key.key_id;
             })?.translation || "";
-        });
+        }
 
         return translations;
     }

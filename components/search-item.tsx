@@ -18,8 +18,11 @@ const SearchItem = () => {
         setMondayId(parseInt(event.target.value));
     };
 
-    const refreshData = (): void => {
-        mutate(key);
+    const refreshData = async (): Promise<void> => {
+        await mutate(key);
+        toast("Data refreshed", {
+            type: "success"
+        });
     };
 
     useEffect(() => {
@@ -37,7 +40,7 @@ const SearchItem = () => {
         toast(error?.message, {
             type: !error?.message ? "success" : "error"
         });
-    }, [isLoading]);
+    }, [isLoading, translation?.pathToFile]);
 
     return (
         <>

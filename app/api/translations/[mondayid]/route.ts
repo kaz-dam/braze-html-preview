@@ -1,7 +1,7 @@
 import { TranslationsRouteParams } from "@/types/translations";
 import TranslationController from "@/controllers/translation-controller";
 import ApiResponse from "@/lib/api-response";
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 
 export async function GET(
     request: NextRequest,

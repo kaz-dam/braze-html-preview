@@ -4,7 +4,6 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 // TODO: Add dynamic page title that contains monday item name
-// TODO: implement toaster messages for error and success
 
 export default function Home() {
     return (
