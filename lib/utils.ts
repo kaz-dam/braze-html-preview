@@ -6,6 +6,8 @@ export const cn = (...inputs: ClassValue[]): string => {
 };
 
 export const fetcher = async (url: string): Promise<any> => {
-    const response = await fetch(url);
+    const response = await fetch(url, {
+        cache: "no-store"
+    });
     return await response.json();
 };

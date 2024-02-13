@@ -13,8 +13,6 @@ const useLokaliseTranslation = (
         revalidateOnReconnect: false
     });
 
-    console.log(data);
-
     return {
         key,
         translation: data?.data,

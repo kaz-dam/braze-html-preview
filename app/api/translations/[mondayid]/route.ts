@@ -3,6 +3,8 @@ import TranslationController from "@/controllers/translation-controller";
 import ApiResponse from "@/lib/api-response";
 import { NextRequest } from "next/server";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(
     request: NextRequest,
     { params }: TranslationsRouteParams

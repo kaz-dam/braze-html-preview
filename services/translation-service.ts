@@ -90,4 +90,4 @@ class TranslationService {
     }
 }
 
-export default new TranslationService(process.env.LOKALISE_API_TOKEN || "");
+export default TranslationService;

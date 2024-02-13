@@ -1,12 +1,13 @@
 import brazeLiquidService from "@/services/braze-liquid-service";
 import mondayService from "@/services/monday-service";
 import templateService from "@/services/template-service";
-import translationService from "@/services/translation-service";
+import TranslationService from "@/services/translation-service";
 import { TranslationIds, TranslationRouteResponse } from "@/types/translations";
 
 class TranslationController {
     static async getTranslationByMondayId(req: Request, params: TranslationIds): Promise<TranslationRouteResponse> {
         const mondayId = params.mondayId;
+        const translationService = new TranslationService(process.env.LOKALISE_API_TOKEN || "");
 
         try {
             const lokaliseInfo = await mondayService.getMondayItemLokaliseColumn(Number(mondayId));
