@@ -24,13 +24,12 @@ class BrazeLiquidService {
     }
 
     parseString(string: string): ITemplate[] {
-        const parsedHtml = this.liquidEngine.parse(string);
-
-        if (!parsedHtml) {
+        try {
+            const parsedHtml = this.liquidEngine.parse(string);
+            return parsedHtml;
+        } catch (error) {
             throw new ApiError(500, "Error parsing liquid template.");
         }
-
-        return parsedHtml;
     }
 
     addTranslationToContext(translation: TranslationObject): void {
@@ -38,13 +37,12 @@ class BrazeLiquidService {
     }
 
     async renderTemplate(template: ITemplate[]): Promise<string> {
-        const renderedHtml = await this.liquidEngine.render(template, this.liquidContext?.getContextObject());
-
-        if (!renderedHtml) {
+        try {
+            const renderedHtml = await this.liquidEngine.render(template, this.liquidContext?.getContextObject());
+            return renderedHtml;
+        } catch (error) {
             throw new ApiError(500, "Error rendering liquid template.");
         }
-
-        return renderedHtml;
     }
 }
 

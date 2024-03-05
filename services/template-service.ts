@@ -38,7 +38,8 @@ class TemplateService {
     }
 
     parseTemplateForContentBlocks(templateContent: string): string[] {
-        const regex = /(?<=\{\{content_blocks\.\$\{)(.*?)(?=\}\}\})/g;
+        const regex = /(?<=\{\{content_blocks\.\$\{)(.*?)(?=\})(\s*\|\s*id:\s*'cb\d+'\}\})?/g;
+
         const matches = templateContent.match(regex);
         
         if (matches) {
