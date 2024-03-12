@@ -1,6 +1,5 @@
 import { OctokitResponse } from "@octokit/types";
 import { Octokit } from "octokit";
-import { writeFile, readFile } from "fs/promises";
 import { Channel, OctokitData } from "@/types/templates";
 import ApiError from "@/lib/api-error";
 import { BaseTemplateStrategy } from "./base-template-strategy";
@@ -29,15 +28,15 @@ export default class GitHubTemplateStrategy extends BaseTemplateStrategy {
     async getTemplateContent(octoresponse: OctokitResponse<OctokitData, number>): Promise<string> {
         let templateContent: string;
 
-        if (process.env.NODE_ENV === "development") {
-            const templateLocalPath = process.env.LOCAL_TEMPLATE_PATH_FOR_DEV ?
-                process.env.LOCAL_TEMPLATE_PATH_FOR_DEV + "/" + octoresponse.data.path :
-                "";
-            readFile(templateLocalPath, "utf-8");
-            templateContent = await this.readLocalFile(templateLocalPath);
-        } else {
+        // if (process.env.NODE_ENV === "development") {
+        //     const templateLocalPath = process.env.LOCAL_TEMPLATE_PATH_FOR_DEV ?
+        //         process.env.LOCAL_TEMPLATE_PATH_FOR_DEV + "/" + octoresponse.data.path :
+        //         "";
+        //     readFile(templateLocalPath, "utf-8");
+        //     templateContent = await this.readLocalFile(templateLocalPath);
+        // } else {
             templateContent = Buffer.from(octoresponse.data.content, octoresponse.data.encoding).toString("utf-8");
-        }
+        // }
 
 
         if (templateContent) {
@@ -74,9 +73,5 @@ export default class GitHubTemplateStrategy extends BaseTemplateStrategy {
             repo: process.env.GITHUB_REPO_NAME,
             path: path
         });
-    }
-
-    private async readLocalFile(path: string): Promise<string> {
-        return await readFile(path, "utf-8");
     }
 }
