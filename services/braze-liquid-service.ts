@@ -19,17 +19,18 @@ class BrazeLiquidService {
 
     async setContext(): Promise<void> {
         const context = await templateService.getLiquidContext();
-        this.liquidContext = new LiquidContextModel(JSON.parse(templateService.getTemplateContent(context)));
+        const contextContent = await templateService.getTemplateContent(context);
+        this.liquidContext = new LiquidContextModel(JSON.parse(contextContent));
         this.liquidContext.setContentBlockRoot(path.join(process.cwd(), "public", "temp", "content_blocks"));
     }
 
     parseString(string: string): ITemplate[] {
-        try {
+        // try {
             const parsedHtml = this.liquidEngine.parse(string);
             return parsedHtml;
-        } catch (error) {
-            throw new ApiError(500, "Error parsing liquid template.");
-        }
+        // } catch (error) {
+        //     throw new ApiError(500, "Error parsing liquid template.");
+        // }
     }
 
     addTranslationToContext(translation: TranslationObject): void {
@@ -37,12 +38,12 @@ class BrazeLiquidService {
     }
 
     async renderTemplate(template: ITemplate[]): Promise<string> {
-        try {
+        // try {
             const renderedHtml = await this.liquidEngine.render(template, this.liquidContext?.getContextObject());
             return renderedHtml;
-        } catch (error) {
-            throw new ApiError(500, "Error rendering liquid template.");
-        }
+        // } catch (error) {
+        //     throw new ApiError(500, "Error rendering liquid template.");
+        // }
     }
 }
 

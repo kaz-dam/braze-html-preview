@@ -5,6 +5,9 @@ import TranslationService from "@/services/translation-service";
 import { TranslationIds, TranslationRouteResponse } from "@/types/translations";
 
 class TranslationController {
+    // TODO: create different strategies for the template service
+    constructor() {}
+
     static async getTranslationByMondayId(req: Request, params: TranslationIds): Promise<TranslationRouteResponse> {
         const mondayId = params.mondayId;
         const translationService = new TranslationService(process.env.LOKALISE_API_TOKEN || "");
@@ -16,9 +19,8 @@ class TranslationController {
             const taskId = translationService.parseTaskIdFromUrl(lokaliseInfo?.lokaliseTaskUrl || "");
             const translation = await translationService.getTranslationFileContent(projectId, taskId);
 
-            // const template = await templateService.getTemplate(lokaliseInfo?.channel ?? "iam");
-            const template = await templateService.getTemplate("iam");
-            const templateContent = templateService.getTemplateContent(template);
+            const template = await templateService.getTemplate(lokaliseInfo?.channel ?? "iam");
+            const templateContent = await templateService.getTemplateContent(template);
             const contentBlocks = templateService.parseTemplateForContentBlocks(templateContent);
             templateService.getAllContentBlocks(contentBlocks);
 

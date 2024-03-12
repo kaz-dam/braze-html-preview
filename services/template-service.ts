@@ -1,7 +1,7 @@
 import { OctokitResponse } from "@octokit/types";
-import { Octokit, RequestError } from "octokit";
+import { Octokit } from "octokit";
 import path from "path";
-import { writeFile } from "fs/promises";
+import { writeFile, readFile } from "fs/promises";
 import { Channel, OctokitData } from "@/types/templates";
 import { mkdirSync } from "fs";
 import { randomUUID } from "crypto";
@@ -60,8 +60,19 @@ class TemplateService {
         }
     }
 
-    getTemplateContent(octoresponse: OctokitResponse<OctokitData, number>): string {
-        const templateContent = Buffer.from(octoresponse.data.content, octoresponse.data.encoding).toString("utf-8");
+    async getTemplateContent(octoresponse: OctokitResponse<OctokitData, number>): Promise<string> {
+        let templateContent: string;
+
+        if (process.env.NODE_ENV === "development") {
+            const templateLocalPath = process.env.LOCAL_TEMPLATE_PATH_FOR_DEV ?
+                process.env.LOCAL_TEMPLATE_PATH_FOR_DEV + "/" + octoresponse.data.path :
+                "";
+            readFile(templateLocalPath, "utf-8");
+            templateContent = await this.readLocalFile(templateLocalPath);
+        } else {
+            templateContent = Buffer.from(octoresponse.data.content, octoresponse.data.encoding).toString("utf-8");
+        }
+
 
         if (templateContent) {
             return templateContent;
@@ -84,7 +95,7 @@ class TemplateService {
     async getAllContentBlocks(contentBlockList: string[]): Promise<void> {
         for (const contentBlock of contentBlockList) {
             const contentBlockTemplate = await this.getContentBlock(contentBlock);
-            const contentBlockTemplateContent = this.getTemplateContent(contentBlockTemplate);
+            const contentBlockTemplateContent = await this.getTemplateContent(contentBlockTemplate);
             const contentBlockContentBlocks = this.parseTemplateForContentBlocks(contentBlockTemplateContent);
             await this.createLocalFile(contentBlockTemplateContent, contentBlockTemplate.data.name, true);
 
@@ -110,6 +121,10 @@ class TemplateService {
             repo: process.env.GITHUB_REPO_NAME,
             path: path
         });
+    }
+
+    private async readLocalFile(path: string): Promise<string> {
+        return await readFile(path, "utf-8");
     }
 }
 
