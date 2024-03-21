@@ -1,14 +1,22 @@
-import brazeLiquidService from "@/services/braze-liquid-service";
+import BrazeLiquidService from "@/services/braze-liquid-service";
 import mondayService from "@/services/monday-service";
-import templateService from "@/services/template-service";
+import TemplateService from "@/services/template-service";
 import TranslationService from "@/services/translation-service";
 import { TranslationIds, TranslationRouteResponse } from "@/types/translations";
 
 class TranslationController {
-    // TODO: create different strategies for the template service
-    constructor() {}
+    private templateService: TemplateService;
+    private brazeLiquidService: BrazeLiquidService;
 
-    static async getTranslationByMondayId(req: Request, params: TranslationIds): Promise<TranslationRouteResponse> {
+    constructor(
+        templateService: TemplateService,
+        brazeLiquidService: BrazeLiquidService
+    ) {
+        this.templateService = templateService;
+        this.brazeLiquidService = brazeLiquidService;
+    }
+
+    async getTranslationByMondayId(req: Request, params: TranslationIds): Promise<TranslationRouteResponse> {
         const mondayId = params.mondayId;
         const translationService = new TranslationService(process.env.LOKALISE_API_TOKEN || "");
 
@@ -19,16 +27,15 @@ class TranslationController {
             const taskId = translationService.parseTaskIdFromUrl(lokaliseInfo?.lokaliseTaskUrl || "");
             const translation = await translationService.getTranslationFileContent(projectId, taskId);
 
-            const template = await templateService.getTemplate(lokaliseInfo?.channel ?? "iam");
-            const templateContent = await templateService.getTemplateContent(template);
-            const contentBlocks = templateService.parseTemplateForContentBlocks(templateContent);
-            templateService.getAllContentBlocks(contentBlocks);
+            const template = await this.templateService.getTemplate(lokaliseInfo?.template || "");
+            const contentBlocks = this.templateService.parseTemplateForContentBlocks(template);
+            this.templateService.getAllContentBlocks(contentBlocks);
 
-            brazeLiquidService.addTranslationToContext(translation);
-            const tpl = brazeLiquidService.parseString(templateContent);
-            const renderedContent = await brazeLiquidService.renderTemplate(tpl);
+            this.brazeLiquidService.addTranslationToContext(translation);
+            const tpl = this.brazeLiquidService.parseString(template);
+            const renderedContent = await this.brazeLiquidService.renderTemplate(tpl);
             
-            const pathToFile = await templateService.createLocalFile(renderedContent, template.data.name);
+            const pathToFile = await this.templateService.createLocalFile(renderedContent, lokaliseInfo?.template || "");
             
             const response: TranslationRouteResponse = {
                 pathToFile

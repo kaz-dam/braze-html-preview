@@ -80,12 +80,14 @@ class MondayService {
         const languageColumn = this.parseColumnsForName(data.data?.items[0].column_values, "language");
         const lokaliseTaskColumn = this.parseColumnsForName(data.data?.items[0].column_values, "lokalise task");
         const parentItemChannelColumn = this.parseColumnsForName(data.data?.items[0].parent_item?.column_values, "channel");
+        const parentItemTemplateNameColumn = this.parseColumnsForName(data.data?.items[0].parent_item?.column_values, "template file");
 
         if (typeof(lokaliseProjectColumn) === "string" || 
             typeof(lokaliseTaskColumn) === "string" || 
             typeof(parentItemChannelColumn) === "string" || 
+            typeof(parentItemTemplateNameColumn) === "string" ||
             typeof(languageColumn) === "string") {
-            const columnName = lokaliseProjectColumn || lokaliseTaskColumn || parentItemChannelColumn || languageColumn;
+            const columnName = lokaliseProjectColumn || lokaliseTaskColumn || parentItemChannelColumn || languageColumn || parentItemTemplateNameColumn;
             throw new ApiError(404, `Monday item column "${columnName}" not found.`);
         }
 
@@ -94,6 +96,7 @@ class MondayService {
             lokaliseTaskUrl: lokaliseTaskColumn?.value?.url,
             parentItemId: Number(data.data?.items[0].parent_item?.id),
             channel: parentItemChannelColumn?.text?.toLowerCase() as Channel,
+            template: parentItemTemplateNameColumn?.text,
             language: languageColumn?.text
         };
     }

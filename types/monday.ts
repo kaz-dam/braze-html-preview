@@ -13,6 +13,7 @@ export type LokaliseRelatedValues = {
     parentItemId: number;
     language: string;
     channel: Channel;
+    template: string;
 };
 
 export type MondayColumn = {

@@ -1,19 +1,16 @@
-import { OctokitResponse } from "@octokit/types";
-import { Octokit } from "octokit";
 import path from "path";
-import { writeFile, readFile } from "fs/promises";
-import { Channel, OctokitData } from "@/types/templates";
+import { writeFile } from "fs/promises";
+import { Channel } from "@/types/templates";
 import { mkdirSync } from "fs";
 import { randomUUID } from "crypto";
 import ApiError from "@/lib/api-error";
+import { BaseTemplateStrategy } from "@/strategies/base-template-strategy";
 
-class TemplateService {
-    private octokit: Octokit;
+export default class TemplateService {
+    private strategy: BaseTemplateStrategy;
 
-    constructor() {
-        this.octokit = new Octokit({
-            auth: process.env.GITHUB_ACCESS_TOKEN
-        });
+    constructor(strategy: BaseTemplateStrategy) {
+        this.strategy = strategy;
     }
 
     async createLocalFile(
@@ -49,41 +46,19 @@ class TemplateService {
         return [];
     }
 
-    async getTemplate(channel: Channel): Promise<OctokitResponse<OctokitData, number>> {
-        const path = channel + "-template.html";
-        const template = await this.request(path);
+    async getTemplate(template: string): Promise<string> {
+        const templateContent = await this.strategy.getFileContent(template);
 
         if (template) {
-            return template;
+            return templateContent;
         } else {
             throw new ApiError(404, "Template not found.");
         }
     }
 
-    async getTemplateContent(octoresponse: OctokitResponse<OctokitData, number>): Promise<string> {
-        let templateContent: string;
-
-        if (process.env.NODE_ENV === "development") {
-            const templateLocalPath = process.env.LOCAL_TEMPLATE_PATH_FOR_DEV ?
-                process.env.LOCAL_TEMPLATE_PATH_FOR_DEV + "/" + octoresponse.data.path :
-                "";
-            readFile(templateLocalPath, "utf-8");
-            templateContent = await this.readLocalFile(templateLocalPath);
-        } else {
-            templateContent = Buffer.from(octoresponse.data.content, octoresponse.data.encoding).toString("utf-8");
-        }
-
-
-        if (templateContent) {
-            return templateContent;
-        } else {
-            throw new ApiError(500, "Error parsing template content.");
-        }
-    }
-
-    async getContentBlock(contentBlockName: string): Promise<OctokitResponse<OctokitData, number>> {
+    async getContentBlock(contentBlockName: string): Promise<string> {
         const path = "content_blocks/" + contentBlockName + ".liquid";
-        const contentBlock = await this.request(path);
+        const contentBlock = await this.strategy.getFileContent(path);
 
         if (contentBlock) {
             return contentBlock;
@@ -95,9 +70,8 @@ class TemplateService {
     async getAllContentBlocks(contentBlockList: string[]): Promise<void> {
         for (const contentBlock of contentBlockList) {
             const contentBlockTemplate = await this.getContentBlock(contentBlock);
-            const contentBlockTemplateContent = await this.getTemplateContent(contentBlockTemplate);
-            const contentBlockContentBlocks = this.parseTemplateForContentBlocks(contentBlockTemplateContent);
-            await this.createLocalFile(contentBlockTemplateContent, contentBlockTemplate.data.name, true);
+            const contentBlockContentBlocks = this.parseTemplateForContentBlocks(contentBlockTemplate);
+            await this.createLocalFile(contentBlockTemplate, contentBlock + ".liquid", true);
 
             if (contentBlockContentBlocks.length > 0) {
                 await this.getAllContentBlocks(contentBlockContentBlocks);
@@ -105,8 +79,8 @@ class TemplateService {
         }
     }
 
-    getLiquidContext(): Promise<OctokitResponse<OctokitData, number>> {
-        const liquidContext = this.request("liquid-context.json");
+    async getLiquidContext(): Promise<string> {
+        const liquidContext = await this.strategy.getFileContent("liquid-context.json");
 
         if (liquidContext) {
             return liquidContext;
@@ -114,18 +88,4 @@ class TemplateService {
             throw new ApiError(404, "Liquid context not found.");
         }
     }
-
-    private async request(path: string): Promise<OctokitResponse<OctokitData, number>> {
-        return await this.octokit.request("/repos/{owner}/{repo}/contents/{path}", {
-            owner: process.env.GITHUB_REPO_OWNER,
-            repo: process.env.GITHUB_REPO_NAME,
-            path: path
-        });
-    }
-
-    private async readLocalFile(path: string): Promise<string> {
-        return await readFile(path, "utf-8");
-    }
 }
-
-export default new TemplateService();
