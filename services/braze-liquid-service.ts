@@ -35,11 +35,11 @@ export default class BrazeLiquidService {
     }
 
     async renderTemplate(template: ITemplate[]): Promise<string> {
-        try {
+        // try {
             const renderedHtml = await this.liquidEngine.render(template, this.liquidContext?.getContextObject());
             return renderedHtml;
-        } catch (error) {
-            throw new ApiError(500, "Error rendering liquid template.");
-        }
+        // } catch (error) {
+        //     throw new ApiError(500, "Error rendering liquid template.");
+        // }
     }
 }

@@ -16,7 +16,7 @@ const HtmlPreview = () => {
     }, [selectedView, templatePath]);
 
     return (
-        <div className="flex justify-center items-center w-full h-screen">
+        // <div className="flex justify-center items-center w-full h-screen">
             <div
                 className={`h-[630px] overflow-hidden border-2 border-slate-400 grid`}
                 style={{
@@ -37,7 +37,7 @@ const HtmlPreview = () => {
                     ></iframe>
                 }
             </div>
-        </div>
+        // </div>
     );
 };
 

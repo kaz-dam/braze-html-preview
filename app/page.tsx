@@ -1,4 +1,5 @@
 import HtmlPreview from "@/components/html-preview";
+import PreviewWrapper from "@/components/preview-wrapper";
 import Sidebar from "@/components/sidebar";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -10,7 +11,7 @@ export default function Home() {
         <>
             <Sidebar />
             <main className="flex w-full min-h-screen flex-col items-center sm:pl-[320px] pl-0">
-                <HtmlPreview />
+                <PreviewWrapper />
             </main>
             <ToastContainer
                 position="bottom-right"
