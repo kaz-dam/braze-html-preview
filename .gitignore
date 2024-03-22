@@ -37,3 +37,6 @@ next-env.d.ts
 
 # temporary public files
 /public/temp
+
+# images
+/public/images/hbomax_small_placeholder.png
