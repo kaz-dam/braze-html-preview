@@ -1,14 +1,21 @@
 "use client";
 
+import { Roboto } from "next/font/google";
 import Image from "next/image";
 import iosLockedImage from "@/public/images/ios_locked_screen.png";
 import hboMaxSmallImage from "@/public/images/hbomax_small_placeholder.png";
 
+const roboto = Roboto({
+    weight: "300",
+    style: "normal",
+    subsets: ["latin"]
+});
+
 const AndroidMockup = () => {
     return (
-        <div className="flex flex-col justify-center items-center bg-no-repeat bg-cover rounded-3xl w-[337px] h-[600px] overflow-hidden" style={{backgroundImage: "url(/images/android_screen.png)"}}>
+        <div className={`flex flex-col justify-center items-center bg-no-repeat bg-cover rounded-3xl w-[337px] h-[600px] overflow-hidden ${roboto.className}`} style={{backgroundImage: "url(/images/android_screen.png)"}}>
             <div className="w-[329px] rounded-lg absolute top-[245px] bg-white p-4">
-                <header className="flex flex-row justify-start gap-2 text-[10px]">
+                <header className="flex flex-row justify-start gap-2 text-[10px] mb-3">
                     <div className="overflow-hidden w-4 h-full">
                         <Image src={hboMaxSmallImage} alt="iOS" objectFit="cover" className="w-full h-auto object-cover" />
                     </div>
@@ -16,12 +23,12 @@ const AndroidMockup = () => {
                     <span>●</span>
                     <span>9m</span>
                 </header>
-                <div className="flex flex-row justify-between items-center gap-4">
-                    <div className="flex flex-col">
-                        <span className="text-xs">Notification Title etc</span>
-                        <span className="text-xs">Here's notification text.</span>
+                <div className="flex flex-row justify-between gap-4">
+                    <div className="flex flex-col w-5/6">
+                        <span className="text-xs mb-2">Notification Title etc</span>
+                        <span className="text-xs">Here's notification body text.</span>
                     </div>
-                    <div className="overflow-hidden w-10 h-full">
+                    <div className="overflow-hidden w-1/6 h-full rounded">
                         <Image src={hboMaxSmallImage} alt="iOS" objectFit="cover" className="w-full h-auto object-cover" />
                     </div>
                 </div>

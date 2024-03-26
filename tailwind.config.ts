@@ -16,6 +16,9 @@ const config: Config = {
             colors: {
                 "brand-primary": process.env.BRAND_COLOR || "#FF00FF",
                 "brand-secondary": process.env.BRAND_SECONDARY_COLOR || "#FF00FF",
+            },
+            fontFamily: {
+                ios: ["-apple-system", "BlinkMacSystemFont", "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", "helvetica", "arial", "sans-serif"],
             }
         },
     },
