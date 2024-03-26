@@ -4,7 +4,7 @@ import { Channel } from "@/types/templates";
 import { mkdirSync } from "fs";
 import { randomUUID } from "crypto";
 import ApiError from "@/lib/api-error";
-import { BaseTemplateStrategy } from "@/strategies/base-template-strategy";
+import { BaseTemplateStrategy } from "@/contracts/base-template-strategy";
 
 export default class TemplateService {
     private strategy: BaseTemplateStrategy;

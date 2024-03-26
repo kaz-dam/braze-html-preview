@@ -1,4 +1,4 @@
-import { BaseTemplateStrategy } from "./base-template-strategy";
+import { BaseTemplateStrategy } from "../contracts/base-template-strategy";
 import { readFile } from "fs/promises";
 import path from "path";
 

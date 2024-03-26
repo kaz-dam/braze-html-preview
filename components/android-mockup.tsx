@@ -2,7 +2,6 @@
 
 import { Roboto } from "next/font/google";
 import Image from "next/image";
-import iosLockedImage from "@/public/images/ios_locked_screen.png";
 import hboMaxSmallImage from "@/public/images/hbomax_small_placeholder.png";
 
 const roboto = Roboto({

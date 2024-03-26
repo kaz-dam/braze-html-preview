@@ -1,5 +1,5 @@
 import { Octokit } from "octokit";
-import { BaseTemplateStrategy } from "./base-template-strategy";
+import { BaseTemplateStrategy } from "../contracts/base-template-strategy";
 import { Buffer } from "buffer";
 
 export default class GitHubTemplateStrategy extends BaseTemplateStrategy {
