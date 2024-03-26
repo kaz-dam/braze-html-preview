@@ -7,7 +7,7 @@ export default class ProjectManagementService {
         this.strategy = strategy;
     }
 
-    async getProjectItemById(projectId: string): Promise<any> {
-        return this.strategy.getProjectItemById(projectId);
+    async getProjectItemById(itemId: number): Promise<any> {
+        return this.strategy.getProjectItemById(itemId);
     }
 }

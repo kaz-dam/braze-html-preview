@@ -20,7 +20,8 @@ export default class MondayProjectManagementStrategy extends BaseProjectManageme
     }
 
     async getProjectItemById(itemId: number): Promise<any> {
-        const query = `query($itemId: [Int]) {
+        const query = `
+        query($itemId: [Int]) {
             items (ids: $itemId) {
                 parent_item {
                     id
@@ -51,7 +52,7 @@ export default class MondayProjectManagementStrategy extends BaseProjectManageme
             throw new ApiError(404, "Monday item not found.");
         }
 
-        // return this.prepareTranslationDataFromMonday(data);
+        return this.prepareTranslationDataFromMonday(data);
     }
 
     parseColumnsForName(columns: MondayColumn[], columnName: string): MondayColumn | string {

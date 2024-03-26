@@ -6,12 +6,14 @@ import { useSWRConfig } from "swr";
 import useLokaliseTranslation from "@/hooks/use-lokalise-translation";
 import { usePreview } from "@/context/preview-context";
 import { toast } from "react-toastify";
+import useProjectManagementItem from "@/hooks/use-project-management-item";
 
 const SearchItem = () => {
     const searchParams = useSearchParams();
     const [ mondayId, setMondayId ] = useState<number>();
     const { mutate } = useSWRConfig();
-    const { key, translation, isLoading, error } = useLokaliseTranslation(mondayId);
+    // const { key, translation, isLoading, error } = useLokaliseTranslation(mondayId);
+    const { key, item, isLoading, error } = useProjectManagementItem(mondayId);
     const { setTemplatePath, setMondayItemIsLoading } = usePreview();
 
     const onInputChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -34,13 +36,14 @@ const SearchItem = () => {
     }, []);
 
     useEffect(() => {
-        setTemplatePath(translation?.pathToFile ? translation.pathToFile : "");
+        console.log("item", item);
+        setTemplatePath(item?.pathToFile ? item.pathToFile : "");
         setMondayItemIsLoading(isLoading);
         
         toast(error?.message, {
             type: !error?.message ? "success" : "error"
         });
-    }, [isLoading, translation?.pathToFile]);
+    }, [isLoading, item]);
 
     return (
         <>

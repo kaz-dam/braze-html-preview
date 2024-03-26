@@ -1,4 +1,3 @@
-import { TranslationsRouteParams } from "@/types/translations";
 import ApiResponse from "@/lib/api-response";
 import { NextRequest } from "next/server";
 import AppServiceProvider from "@/providers/app-service-provider";
@@ -13,7 +12,7 @@ export async function GET(
     const projectManagementController = await AppServiceProvider.createProjectManagementController();
 
     try {
-        const projectManagementItem = await projectManagementController.getProjectItem(request, params.itemId);
+        const projectManagementItem = await projectManagementController.getProjectItem(request, Number(params.itemId));
         return ApiResponse.success(request, projectManagementItem);
     } catch (error: any) {
         return ApiResponse.error(request, error.message, error.statusCode);

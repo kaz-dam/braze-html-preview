@@ -9,11 +9,9 @@ export default class ProjectManagementController {
         this.projectManagementService = projectManagementService;
     }
 
-    async getProjectItem(req: Request, itemId: any): Promise<any> {
-        const projectId = itemId.projectId;
-        
+    async getProjectItem(req: Request, itemId: number): Promise<any> {
         try {
-            const projectItem = await this.projectManagementService.getProjectItemById(projectId);
+            const projectItem = await this.projectManagementService.getProjectItemById(itemId);
             
             return projectItem;
         } catch (error: any) {
