@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
 import "./globals.css";
 import { PreviewProvider } from "@/context/preview-context";
+import { ProjectInfoProvider } from "@/context/project-info-context";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 
@@ -18,9 +19,11 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body className={montserrat.className}>
-                <PreviewProvider>
-                    {children}
-                </PreviewProvider>
+                <ProjectInfoProvider>
+                    <PreviewProvider>
+                        {children}
+                    </PreviewProvider>
+                </ProjectInfoProvider>
             </body>
         </html>
     );

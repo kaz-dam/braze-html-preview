@@ -7,6 +7,7 @@ import useLokaliseTranslation from "@/hooks/use-lokalise-translation";
 import { usePreview } from "@/context/preview-context";
 import { toast } from "react-toastify";
 import useProjectManagementItem from "@/hooks/use-project-management-item";
+import { useProjectInfo } from "@/context/project-info-context";
 
 const SearchItem = () => {
     const searchParams = useSearchParams();
@@ -14,6 +15,7 @@ const SearchItem = () => {
     const { mutate } = useSWRConfig();
     // const { key, translation, isLoading, error } = useLokaliseTranslation(mondayId);
     const { key, item, isLoading, error } = useProjectManagementItem(mondayId);
+    const { setItemTitle, setProjectChannel, setProjectLanguage, setProjectTemplate } = useProjectInfo();
     const { setTemplatePath, setMondayItemIsLoading } = usePreview();
 
     const onInputChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -39,6 +41,11 @@ const SearchItem = () => {
         console.log("item", item);
         setTemplatePath(item?.pathToFile ? item.pathToFile : "");
         setMondayItemIsLoading(isLoading);
+
+        setItemTitle(item?.title ? item.title : "");
+        setProjectChannel(item?.channel ? item.channel : "");
+        setProjectLanguage(item?.language ? item.language : "");
+        setProjectTemplate(item?.template ? item.template : "");
         
         toast(error?.message, {
             type: !error?.message ? "success" : "error"
