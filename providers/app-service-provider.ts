@@ -8,6 +8,7 @@ import { BaseTemplateStrategy } from "@/contracts/base-template-strategy";
 import GitHubTemplateStrategy from "@/strategies/github-template-strategy";
 import LocalTemplateStrategy from "@/strategies/local-template-strategy";
 import MondayProjectManagementStrategy from "@/strategies/monday-project-management-strategy";
+import TranslationService from "@/services/translation-service";
 
 export default class AppServiceProvider {
     static async createTranslationController(): Promise<TranslationController> {
@@ -45,7 +46,8 @@ export default class AppServiceProvider {
         }
 
         const projectManagementService = new ProjectManagementService(projectManagementStrategy);
+        const translationService = new TranslationService(process.env.LOKALISE_API_TOKEN || "");
         
-        return new ProjectManagementController(projectManagementService);
+        return new ProjectManagementController(projectManagementService, translationService);
     }
 }

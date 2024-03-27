@@ -7,7 +7,7 @@ const ProjectInfoCard = () => {
 
     return (
         <div className="mt-8">
-            <h2 className="text-xl font-semibold text-center mb-2">{itemTitle}</h2>
+            <h2 className="text-xl text-center mb-2">{itemTitle}</h2>
             <div className="flex flex-col divide-y-[1px]">
                 <div className="flex flex-row justify-between items-center">
                     <span className="font-semibold">Channel</span>

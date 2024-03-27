@@ -1,7 +1,8 @@
 import { fetcher } from "@/lib/utils";
+import { ProjectItemHook } from "@/types/project-management";
 import useSWR from "swr";
 
-const useProjectManagementItem = (itemId: number | undefined) => {
+const useProjectManagementItem = (itemId: number | undefined): ProjectItemHook => {
     const key = `/api/project/${itemId}`;
 
     const { data, error, isLoading } = useSWR(key, fetcher, {

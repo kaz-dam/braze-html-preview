@@ -13,9 +13,9 @@ const SearchItem = () => {
     const searchParams = useSearchParams();
     const [ mondayId, setMondayId ] = useState<number>();
     const { mutate } = useSWRConfig();
-    // const { key, translation, isLoading, error } = useLokaliseTranslation(mondayId);
     const { key, item, isLoading, error } = useProjectManagementItem(mondayId);
     const { setItemTitle, setProjectChannel, setProjectLanguage, setProjectTemplate } = useProjectInfo();
+    const { translationKey, translation } = useLokaliseTranslation(item?.lokaliseProjectId, item?.lokaliseTaskId, item?.template);
     const { setTemplatePath, setMondayItemIsLoading } = usePreview();
 
     const onInputChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -23,7 +23,7 @@ const SearchItem = () => {
     };
 
     const refreshData = async (): Promise<void> => {
-        await mutate(key);
+        await mutate(translationKey);
         toast("Data refreshed", {
             type: "success"
         });
@@ -38,19 +38,20 @@ const SearchItem = () => {
     }, []);
 
     useEffect(() => {
-        console.log("item", item);
-        setTemplatePath(item?.pathToFile ? item.pathToFile : "");
-        setMondayItemIsLoading(isLoading);
-
         setItemTitle(item?.itemName ? item.itemName : "");
         setProjectChannel(item?.channel ? item.channel : "");
         setProjectLanguage(item?.language ? item.language : "");
         setProjectTemplate(item?.template ? item.template : "");
         
-        toast(error?.message, {
-            type: !error?.message ? "success" : "error"
-        });
+        // toast(error?.message, {
+        //     type: !error?.message ? "success" : "error"
+        // });
     }, [isLoading, item]);
+
+    useEffect(() => {
+        setTemplatePath(translation?.pathToFile ? translation.pathToFile : "");
+        setMondayItemIsLoading(isLoading);
+    }, [translation]);
 
     return (
         <>

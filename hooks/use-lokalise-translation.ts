@@ -3,9 +3,11 @@ import { LokaliseTranslationHook } from "@/types/translations";
 import useSWR from "swr";
 
 const useLokaliseTranslation = (
-    mondayId: number | undefined
+    projectId: string | undefined,
+    taskId: number | undefined,
+    templateName: string | undefined
 ): LokaliseTranslationHook => {
-    const key = `/api/translations/${mondayId}`;
+    const key = `/api/translations/${projectId}/${taskId}?templateName=${templateName}`;
 
     const { data, error, isLoading } = useSWR(key, fetcher, {
         revalidateIfStale: false,
@@ -14,10 +16,10 @@ const useLokaliseTranslation = (
     });
 
     return {
-        key,
+        translationKey: key,
         translation: data?.data,
-        error: data?.success ? null : data,
-        isLoading
+        translationError: data?.success ? null : data,
+        isTranslationLoading: isLoading
     };
 };
 

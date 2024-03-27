@@ -10,10 +10,12 @@ export type TranslationContextType = TranslationIds & {
 };
 
 export type TranslationIds = {
-    mondayId: number | undefined;
-    mondayParentId: number | undefined;
+    mondayId: number;
+    mondayParentId: number;
     language: string | undefined;
-    projectId: string | undefined;
+    projectId: string;
+    taskId: number;
+    templateName: string;
 };
 
 export type TranslationsRouteParams = {
@@ -25,8 +27,8 @@ export type TranslationRouteResponse = {
 };
 
 export type LokaliseTranslationHook = {
-    key: string;
+    translationKey: string;
     translation: TranslationRouteResponse;
-    error: Error | null;
-    isLoading: boolean;
+    translationError: Error | null;
+    isTranslationLoading: boolean;
 };
