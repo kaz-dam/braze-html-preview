@@ -25,6 +25,7 @@ export default class MondayProjectManagementStrategy extends BaseProjectManageme
             items (ids: $itemId) {
                 parent_item {
                     id
+                    name
                     column_values {
                         id
                         title
@@ -78,6 +79,7 @@ export default class MondayProjectManagementStrategy extends BaseProjectManageme
         const lokaliseTaskColumn = this.parseColumnsForName(data.data?.items[0].column_values, "lokalise task");
         const parentItemChannelColumn = this.parseColumnsForName(data.data?.items[0].parent_item?.column_values, "channel");
         const parentItemTemplateNameColumn = this.parseColumnsForName(data.data?.items[0].parent_item?.column_values, "template file");
+        const parentItemName = data.data?.items[0].parent_item?.name;
 
         if (typeof(lokaliseProjectColumn) === "string" || 
             typeof(lokaliseTaskColumn) === "string" || 
@@ -94,7 +96,8 @@ export default class MondayProjectManagementStrategy extends BaseProjectManageme
             parentItemId: Number(data.data?.items[0].parent_item?.id),
             channel: parentItemChannelColumn?.text?.toLowerCase() as Channel,
             template: parentItemTemplateNameColumn?.text,
-            language: languageColumn?.text
+            language: languageColumn?.text,
+            itemName: parentItemName
         };
     }
 

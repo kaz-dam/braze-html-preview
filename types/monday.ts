@@ -14,6 +14,7 @@ export type LokaliseRelatedValues = {
     language: string;
     channel: Channel;
     template: string;
+    itemName: string;
 };
 
 export type MondayColumn = {
@@ -31,6 +32,7 @@ export type MondayLinkColumn = {
 export type MondayResponseItem = {
     parent_item: {
         id: string;
+        name: string;
         column_values: MondayColumn[];
     };
     column_values: MondayColumn[];

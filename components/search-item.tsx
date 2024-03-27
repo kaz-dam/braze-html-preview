@@ -42,7 +42,7 @@ const SearchItem = () => {
         setTemplatePath(item?.pathToFile ? item.pathToFile : "");
         setMondayItemIsLoading(isLoading);
 
-        setItemTitle(item?.title ? item.title : "");
+        setItemTitle(item?.itemName ? item.itemName : "");
         setProjectChannel(item?.channel ? item.channel : "");
         setProjectLanguage(item?.language ? item.language : "");
         setProjectTemplate(item?.template ? item.template : "");

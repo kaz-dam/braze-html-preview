@@ -81,6 +81,7 @@ class MondayService {
         const lokaliseTaskColumn = this.parseColumnsForName(data.data?.items[0].column_values, "lokalise task");
         const parentItemChannelColumn = this.parseColumnsForName(data.data?.items[0].parent_item?.column_values, "channel");
         const parentItemTemplateNameColumn = this.parseColumnsForName(data.data?.items[0].parent_item?.column_values, "template file");
+        const parentItemName = data.data?.items[0].parent_item?.name;
 
         if (typeof(lokaliseProjectColumn) === "string" || 
             typeof(lokaliseTaskColumn) === "string" || 
@@ -97,7 +98,8 @@ class MondayService {
             parentItemId: Number(data.data?.items[0].parent_item?.id),
             channel: parentItemChannelColumn?.text?.toLowerCase() as Channel,
             template: parentItemTemplateNameColumn?.text,
-            language: languageColumn?.text
+            language: languageColumn?.text,
+            itemName: parentItemName
         };
     }
 
