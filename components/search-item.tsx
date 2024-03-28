@@ -15,8 +15,8 @@ const SearchItem = () => {
     const { mutate } = useSWRConfig();
     const { key, item, isLoading, error } = useProjectManagementItem(mondayId);
     const { setItemTitle, setProjectChannel, setProjectLanguage, setProjectTemplate } = useProjectInfo();
-    const { translationKey, translation } = useLokaliseTranslation(item?.lokaliseProjectId, item?.lokaliseTaskId, item?.template);
-    const { setTemplatePath, setMondayItemIsLoading } = usePreview();
+    const { translationKey, translation } = useLokaliseTranslation(item?.lokaliseProjectId, item?.lokaliseTaskId, item?.template, item?.channel);
+    const { setTemplatePath, setMondayItemIsLoading, setTranslation } = usePreview();
 
     const onInputChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
         setMondayId(parseInt(event.target.value));
@@ -50,6 +50,7 @@ const SearchItem = () => {
 
     useEffect(() => {
         setTemplatePath(translation?.pathToFile ? translation.pathToFile : "");
+        setTranslation(translation?.translation ? translation.translation : "");
         setMondayItemIsLoading(isLoading);
     }, [translation]);
 

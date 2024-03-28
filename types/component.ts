@@ -7,3 +7,8 @@ export enum View {
 export type LoaderProps = {
     className?: string;
 };
+
+export type PushMockupProps = {
+    messageTitle: string;
+    messageBody: string;
+};

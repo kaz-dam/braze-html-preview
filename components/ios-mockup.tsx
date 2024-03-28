@@ -2,8 +2,9 @@
 
 import Image from "next/image";
 import hboMaxSmallImage from "@/public/images/hbomax_small_placeholder.png";
+import { PushMockupProps } from "@/types/component";
 
-const IosMockup = () => {
+const IosMockup = ({ messageTitle, messageBody }: PushMockupProps) => {
     return (
         <div className="flex flex-col justify-end items-center bg-no-repeat bg-cover rounded-3xl w-[310px] h-[600px] overflow-hidden font-ios px-4 pb-28" style={{backgroundImage: "url(/images/ios_locked_screen.png)"}}>
             <div className="w-full rounded-3xl bg-white max-h-[300px]">
@@ -13,8 +14,8 @@ const IosMockup = () => {
                             <Image src={hboMaxSmallImage} alt="iOS" objectFit="cover" className="w-full h-auto object-cover" />
                         </div>
                         <div className="flex flex-col">
-                            <span className="text-xs font-semibold">Notification Title etc</span>
-                            <span className="text-xs">Here's notification text.</span>
+                            <span className="text-xs font-semibold">{messageTitle}</span>
+                            <span className="text-xs">{messageBody}</span>
                         </div>
                     </div>
                     <div className="flex items-start">

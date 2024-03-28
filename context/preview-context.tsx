@@ -10,6 +10,8 @@ type PreviewContextType = {
     setMondayItemIsLoading: Dispatch<boolean>;
     selectedView: View;
     setSelectedView: Dispatch<View>;
+    translation: any;
+    setTranslation: Dispatch<any>;
 };
 
 const defaultContextValue: PreviewContextType = {
@@ -19,6 +21,8 @@ const defaultContextValue: PreviewContextType = {
     setMondayItemIsLoading: () => {},
     selectedView: View.MOBILE,
     setSelectedView: () => {},
+    translation: {},
+    setTranslation: () => {}
 };
 
 const PreviewContext = createContext<PreviewContextType>(defaultContextValue);
@@ -27,6 +31,7 @@ export const PreviewProvider = ({ children }: { children: React.ReactNode }) => 
     const [ templatePath, setTemplatePath ] = useState<string>("");
     const [ mondayItemIsLoading, setMondayItemIsLoading ] = useState<boolean>(false);
     const [ selectedView, setSelectedView ] = useState<View>(View.MOBILE);
+    const [ translation, setTranslation ] = useState<any>({});
 
     return (
         <PreviewContext.Provider value={{
@@ -35,7 +40,9 @@ export const PreviewProvider = ({ children }: { children: React.ReactNode }) => 
             mondayItemIsLoading,
             setMondayItemIsLoading,
             selectedView,
-            setSelectedView
+            setSelectedView,
+            translation,
+            setTranslation
         }}>
             {children}
         </PreviewContext.Provider>

@@ -24,6 +24,7 @@ export type TranslationsRouteParams = {
 
 export type TranslationRouteResponse = {
     pathToFile?: string;
+    translation?: string;
 };
 
 export type LokaliseTranslationHook = {

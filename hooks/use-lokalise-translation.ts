@@ -5,9 +5,10 @@ import useSWR from "swr";
 const useLokaliseTranslation = (
     projectId: string | undefined,
     taskId: number | undefined,
-    templateName: string | undefined
+    templateName: string | undefined,
+    channel: string | undefined
 ): LokaliseTranslationHook => {
-    const key = `/api/translations/${projectId}/${taskId}?templateName=${templateName}`;
+    const key = `/api/translations/${projectId}/${taskId}?templateName=${templateName}&channelName=${channel}`;
 
     const { data, error, isLoading } = useSWR(key, fetcher, {
         revalidateIfStale: false,
